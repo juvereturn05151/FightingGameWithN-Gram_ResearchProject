@@ -2,15 +2,27 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [SerializeField]
+    private Animator animator;
+
+    [SerializeField]
+    private CharacterMovement characterMovement;
+
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        UpdateAnimation();
+    }
+
+    void UpdateAnimation() 
+    {
+        if (animator == null) 
+        {
+            return;
+        }
     }
 }

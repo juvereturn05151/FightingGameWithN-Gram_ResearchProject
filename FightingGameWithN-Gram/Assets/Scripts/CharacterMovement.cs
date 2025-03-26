@@ -10,6 +10,7 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private InputActionReference move;
 
     private Vector2 moveDirection;
+    public Vector2 MoveDirection => moveDirection;
 
     private void Update()
     {
