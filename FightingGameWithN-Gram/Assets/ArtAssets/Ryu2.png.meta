@@ -162,7 +162,7 @@ TextureImporter:
   serializedVersion: 13
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 0
+    enableMipMap: 1
     sRGBTexture: 1
     linearTexture: 0
     fadeOut: 0
@@ -190,7 +190,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -226,7 +226,7 @@ TextureImporter:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
-    resizeAlgorithm: 0
+    resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
@@ -253,7 +253,7 @@ TextureImporter:
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: -1
+    textureFormat: 12
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
@@ -1433,7 +1433,59 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Ryu2_0: 4026072596695261395
+      Ryu2_1: 2896865612410266477
+      Ryu2_10: 6889092167853798469
+      Ryu2_11: 8461356436452758911
+      Ryu2_12: 1895040193377939440
+      Ryu2_13: -8495584373438603001
+      Ryu2_14: -1690171793079846793
+      Ryu2_15: 2077265584585478287
+      Ryu2_16: 7708080125049806944
+      Ryu2_17: -2785738786004113247
+      Ryu2_18: 824916845204325959
+      Ryu2_19: 5734112532372501692
+      Ryu2_2: 1375514390700069103
+      Ryu2_20: -748758333563895765
+      Ryu2_21: -4451381573362595790
+      Ryu2_22: 6978184351478254689
+      Ryu2_23: 7452412290462597879
+      Ryu2_24: 4397165509592349364
+      Ryu2_25: 7138582494753596688
+      Ryu2_26: -4868175330700179002
+      Ryu2_27: -2467351103922866527
+      Ryu2_28: 2824574832817631559
+      Ryu2_29: -4775390079724495473
+      Ryu2_3: 1400639233856140318
+      Ryu2_30: -1832579464799590226
+      Ryu2_31: 4995535850943883516
+      Ryu2_32: -4294212721249622964
+      Ryu2_33: 5020236319357121116
+      Ryu2_34: -6420295759554084616
+      Ryu2_35: 3421230303483268972
+      Ryu2_36: -1384388536008821395
+      Ryu2_37: -3169734341591983185
+      Ryu2_38: 4164875908704239865
+      Ryu2_39: 2391297205537185435
+      Ryu2_4: 9013609754715685493
+      Ryu2_40: -3269734289469984313
+      Ryu2_41: -2369147339473045267
+      Ryu2_42: 5795946279983565059
+      Ryu2_43: 7090335939575958138
+      Ryu2_44: 1824994221475777807
+      Ryu2_45: 1568968219820381302
+      Ryu2_46: 5090941034266969990
+      Ryu2_47: 6558641478655962170
+      Ryu2_48: -6316564926912486178
+      Ryu2_49: 6931594491589337150
+      Ryu2_5: 5416331924486669347
+      Ryu2_50: 2114081548794282577
+      Ryu2_51: -8903470264637699036
+      Ryu2_6: 4376645789502261408
+      Ryu2_7: 8568940476059868159
+      Ryu2_8: -7004856418766968057
+      Ryu2_9: -5777748205176433310
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
