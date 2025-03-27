@@ -8,6 +8,9 @@ public class Character : MonoBehaviour
     [SerializeField]
     private CharacterMovement characterMovement;
 
+    [SerializeField]
+    private CharacterAttack characterAttack;
+
     void Start()
     {
         
@@ -24,6 +27,8 @@ public class Character : MonoBehaviour
         {
             return;
         }
+
+        animator.SetBool("Attack", characterAttack.IsAttack);
 
         if (characterMovement.MoveDirection.x >= 0.5f)
         {
