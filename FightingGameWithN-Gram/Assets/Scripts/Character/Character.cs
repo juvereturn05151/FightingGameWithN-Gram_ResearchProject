@@ -44,7 +44,7 @@ public class Character : MonoBehaviour
             return;
         }
 
-        characterAttack.AttackUpdate(opponent.IsHurt && opponent.Animator.GetCurrentAnimatorStateInfo(0).IsName("Lose_Animation"));
+        characterAttack.AttackUpdate(opponent.IsHurt && opponent.Animator.GetCurrentAnimatorStateInfo(0).IsName("Hurt_Animation"));
 
         if (characterAttack.ExecuteHitConfirm)
         {
