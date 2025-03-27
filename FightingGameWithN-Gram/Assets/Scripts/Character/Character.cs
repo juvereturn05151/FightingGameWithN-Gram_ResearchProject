@@ -103,6 +103,8 @@ public class Character : MonoBehaviour
     public void OnBeingHit() 
     {
         isHurt = true;
+        characterAttack.OnAttackEnd();
+        animator.SetBool("Attack", false);
         animator.SetBool("Hurt", isHurt);
     }
 
