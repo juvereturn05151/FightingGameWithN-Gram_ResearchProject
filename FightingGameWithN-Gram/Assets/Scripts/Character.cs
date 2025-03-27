@@ -25,13 +25,18 @@ public class Character : MonoBehaviour
             return;
         }
 
-        if (characterMovement.MoveDirection.x > 0.0001f)
+        if (characterMovement.MoveDirection.x >= 0.5f)
         {
             animator.SetBool("MoveRight", true);
+        }
+        else if (characterMovement.MoveDirection.x <= -0.5f)
+        {
+            animator.SetBool("MoveLeft", true);
         }
         else 
         {
             animator.SetBool("MoveRight", false);
+            animator.SetBool("MoveLeft", false);
         }
     }
 }
