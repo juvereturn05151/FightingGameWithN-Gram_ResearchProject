@@ -30,6 +30,11 @@ public class Character : MonoBehaviour
 
         animator.SetBool("Attack", characterAttack.IsAttack);
 
+        if (characterAttack.IsAttack) 
+        {
+            return;
+        }
+
         if (characterMovement.MoveDirection.x >= 0.5f)
         {
             animator.SetBool("MoveRight", true);

@@ -644,6 +644,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player1Character
       objectReference: {fileID: 0}
+    - target: {fileID: 6597511621177273890, guid: bdb139526e25a254191758d1d7858f95, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3.0780365
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
