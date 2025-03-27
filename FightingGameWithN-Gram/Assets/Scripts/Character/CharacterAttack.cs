@@ -9,8 +9,21 @@ public class CharacterAttack : MonoBehaviour
 
     public bool IsAttack => isAttack;
 
-    public void AttackUpdate()
+    private bool executeHitConfirm;
+
+    public bool ExecuteHitConfirm => executeHitConfirm;
+
+    public void AttackUpdate(bool canHitConfirm)
     {
+        if (canHitConfirm) 
+        {
+            if (attack.ToInputAction().WasPressedThisFrame())
+            {
+                executeHitConfirm = true;
+                return;
+            }
+        }
+
         if (attack.ToInputAction().WasPressedThisFrame())
         {
             isAttack = true;

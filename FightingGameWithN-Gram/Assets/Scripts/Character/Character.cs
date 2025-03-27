@@ -15,6 +15,7 @@ public class Character : MonoBehaviour
     private CharacterAttack characterAttack;
 
     private bool isHurt;
+    public bool IsHurt => isHurt;
 
     private Character opponent;
 
@@ -32,7 +33,13 @@ public class Character : MonoBehaviour
 
     void Update()
     {
-        characterAttack.AttackUpdate();
+        characterAttack.AttackUpdate(opponent.IsHurt);
+
+        if (characterAttack.ExecuteHitConfirm) 
+        {
+            animator.SetBool("HitConfirm", true);
+            return;
+        }
 
         if (characterAttack.IsAttack)
         {
@@ -69,6 +76,11 @@ public class Character : MonoBehaviour
             animator.SetBool("MoveRight", false);
             animator.SetBool("MoveLeft", false);
         }
+    }
+
+    void ExecuteHitConfirm() 
+    {
+        animator.SetBool("HitConfirm", true);
     }
 
     public void OnBeingHit() 
