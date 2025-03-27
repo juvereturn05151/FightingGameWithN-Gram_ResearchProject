@@ -48,6 +48,7 @@ public class Character : MonoBehaviour
 
         if (characterAttack.ExecuteHitConfirm)
         {
+            opponent.SetIsLose(true);
             animator.SetBool("HitConfirm", true);
             return;
         }
@@ -77,11 +78,25 @@ public class Character : MonoBehaviour
 
         if (characterMovement.MoveDirection.x >= 0.5f)
         {
-            animator.SetBool("MoveRight", true);
+            if (playerSide == 0)
+            {
+                animator.SetBool("MoveRight", true);
+            }
+            else
+            {
+                animator.SetBool("MoveLeft", true);
+            }
         }
         else if (characterMovement.MoveDirection.x <= -0.5f)
         {
-            animator.SetBool("MoveLeft", true);
+            if (playerSide == 0)
+            {
+                animator.SetBool("MoveLeft", true);
+            }
+            else
+            {
+                animator.SetBool("MoveRight", true);
+            }
         }
         else 
         {
