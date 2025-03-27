@@ -3,6 +3,9 @@ using UnityEngine;
 public class Character : MonoBehaviour
 {
     [SerializeField]
+    private int playerSide;
+
+    [SerializeField]
     private Animator animator;
 
     [SerializeField]
@@ -13,9 +16,18 @@ public class Character : MonoBehaviour
 
     private bool isHurt;
 
+    private Character opponent;
+
     void Start()
     {
-        
+        if (playerSide == 0)
+        {
+            opponent = GameManager.Instance.character2;
+        }
+        else 
+        {
+            opponent = GameManager.Instance.character1;
+        }
     }
 
     void Update()
