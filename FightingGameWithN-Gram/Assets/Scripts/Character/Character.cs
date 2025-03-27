@@ -44,7 +44,17 @@ public class Character : MonoBehaviour
             return;
         }
 
-        characterAttack.AttackUpdate(opponent.IsHurt && opponent.Animator.GetCurrentAnimatorStateInfo(0).IsName("Hurt_Animation"));
+        if (isHurt)
+        {
+            characterAttack.OnAttackEnd();
+            animator.SetBool("Attack", false);
+        }
+        else 
+        {
+            characterAttack.AttackUpdate(opponent.IsHurt && opponent.Animator.GetCurrentAnimatorStateInfo(0).IsName("Hurt_Animation"));
+        }
+
+
 
         if (characterAttack.ExecuteHitConfirm)
         {
@@ -117,6 +127,11 @@ public class Character : MonoBehaviour
 
     public void OnBeingHit() 
     {
+        if (isHurt) 
+        {
+            return;
+        }
+
         isHurt = true;
         characterAttack.OnAttackEnd();
         animator.SetBool("Attack", false);
