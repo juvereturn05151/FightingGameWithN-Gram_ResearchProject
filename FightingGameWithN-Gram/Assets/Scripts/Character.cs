@@ -24,5 +24,14 @@ public class Character : MonoBehaviour
         {
             return;
         }
+
+        if (characterMovement.MoveDirection.x > 0.0001f)
+        {
+            animator.SetBool("MoveRight", true);
+        }
+        else 
+        {
+            animator.SetBool("MoveRight", false);
+        }
     }
 }
