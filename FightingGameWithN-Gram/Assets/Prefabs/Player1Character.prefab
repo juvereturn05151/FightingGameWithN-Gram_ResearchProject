@@ -221,6 +221,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74d9e1820c038f14bb6e94842f9a7507, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerSide: 0
   animator: {fileID: 7817402320201100624}
   characterMovement: {fileID: 7935416204798642169}
   characterAttack: {fileID: 4678343804409546276}
