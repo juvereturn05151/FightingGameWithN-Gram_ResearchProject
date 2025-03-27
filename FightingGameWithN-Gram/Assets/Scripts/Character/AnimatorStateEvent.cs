@@ -16,4 +16,9 @@ public class AnimatorStateEvent : MonoBehaviour
     {
         character.OnBeingHitDone();
     }
+
+    public void OnExecuteHitConfirmDone() 
+    {
+        character.OnExecuteHitConfirmDone();
+    }
 }

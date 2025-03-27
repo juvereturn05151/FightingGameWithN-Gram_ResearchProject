@@ -3,7 +3,11 @@ using UnityEngine.InputSystem;
 
 public class CharacterAttack : MonoBehaviour
 {
-    [SerializeField] private InputActionReference attack;
+    [SerializeField] 
+    private InputActionReference attack;
+
+    [SerializeField]
+    private Character character;
 
     private bool isAttack;
 
@@ -12,6 +16,11 @@ public class CharacterAttack : MonoBehaviour
     private bool executeHitConfirm;
 
     public bool ExecuteHitConfirm => executeHitConfirm;
+
+    public void Init(Character character) 
+    {
+        this.character = character;
+    }
 
     public void AttackUpdate(bool canHitConfirm)
     {

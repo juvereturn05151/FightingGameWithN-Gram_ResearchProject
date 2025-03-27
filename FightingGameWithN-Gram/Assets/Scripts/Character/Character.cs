@@ -7,6 +7,7 @@ public class Character : MonoBehaviour
 
     [SerializeField]
     private Animator animator;
+    public Animator Animator=>animator;
 
     [SerializeField]
     private CharacterMovement characterMovement;
@@ -16,6 +17,8 @@ public class Character : MonoBehaviour
 
     private bool isHurt;
     public bool IsHurt => isHurt;
+
+    private bool isLose;
 
     private Character opponent;
 
@@ -29,17 +32,26 @@ public class Character : MonoBehaviour
         {
             opponent = GameManager.Instance.character1;
         }
+
+        characterAttack.Init(this);
     }
 
     void Update()
     {
-        characterAttack.AttackUpdate(opponent.IsHurt);
+        if (isLose) 
+        {
+            animator.SetBool("Lose", isLose);
+            return;
+        }
 
-        if (characterAttack.ExecuteHitConfirm) 
+        characterAttack.AttackUpdate(opponent.IsHurt && opponent.Animator.GetCurrentAnimatorStateInfo(0).IsName("Lose_Animation"));
+
+        if (characterAttack.ExecuteHitConfirm)
         {
             animator.SetBool("HitConfirm", true);
             return;
         }
+
 
         if (characterAttack.IsAttack)
         {
@@ -78,9 +90,14 @@ public class Character : MonoBehaviour
         }
     }
 
-    void ExecuteHitConfirm() 
+    public void OnExecuteHitConfirmDone() 
     {
-        animator.SetBool("HitConfirm", true);
+        opponent.SetIsLose(true);
+    }
+
+    public void SetIsLose(bool lose)
+    {
+        isLose = lose;
     }
 
     public void OnBeingHit() 
