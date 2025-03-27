@@ -18,12 +18,21 @@ public class Character : MonoBehaviour
 
     void Update()
     {
-
         characterAttack.AttackUpdate();
+
+        if (characterAttack.IsAttack)
+        {
+            characterMovement.ResetMoveDirection();
+
+        }
+        else 
+        {
+            characterMovement.MovementUpdate();
+        }
 
         if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_Animation"))
         {
-            characterMovement.MovementUpdate();
+
         }
 
         UpdateAnimation();
@@ -37,6 +46,7 @@ public class Character : MonoBehaviour
         }
 
         animator.SetBool("Attack", characterAttack.IsAttack);
+
 
         if (characterMovement.MoveDirection.x >= 0.5f)
         {

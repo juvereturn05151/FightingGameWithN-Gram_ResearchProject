@@ -11,6 +11,14 @@ public class CharacterAttack : MonoBehaviour
 
     public void AttackUpdate()
     {
-        isAttack = attack.ToInputAction().WasPressedThisFrame();
+        if (attack.ToInputAction().WasPressedThisFrame())
+        {
+            isAttack = true;
+        }
+    }
+
+    public void OnAttackEnd() 
+    {
+        isAttack = false;
     }
 }
