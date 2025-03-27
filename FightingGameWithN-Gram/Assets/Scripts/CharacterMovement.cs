@@ -12,7 +12,7 @@ public class CharacterMovement : MonoBehaviour
     private Vector2 moveDirection;
     public Vector2 MoveDirection => moveDirection;
 
-    private void Update()
+    public void MovementUpdate()
     {
         moveDirection = move.action.ReadValue<Vector2>();
     }

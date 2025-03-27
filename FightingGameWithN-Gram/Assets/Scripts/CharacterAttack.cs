@@ -8,13 +8,8 @@ public class CharacterAttack : MonoBehaviour
     private bool isAttack;
 
     public bool IsAttack => isAttack;
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
+    public void AttackUpdate()
     {
         isAttack = attack.ToInputAction().WasPressedThisFrame();
     }
