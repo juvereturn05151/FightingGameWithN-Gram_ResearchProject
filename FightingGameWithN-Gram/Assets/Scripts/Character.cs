@@ -11,6 +11,8 @@ public class Character : MonoBehaviour
     [SerializeField]
     private CharacterAttack characterAttack;
 
+    private bool isHurt;
+
     void Start()
     {
         
@@ -23,22 +25,16 @@ public class Character : MonoBehaviour
         if (characterAttack.IsAttack)
         {
             characterMovement.ResetMoveDirection();
-
         }
         else 
         {
             characterMovement.MovementUpdate();
         }
 
-        if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Attack_Animation"))
-        {
-
-        }
-
         UpdateAnimation();
     }
 
-    void UpdateAnimation() 
+    private void UpdateAnimation() 
     {
         if (animator == null) 
         {
@@ -61,5 +57,17 @@ public class Character : MonoBehaviour
             animator.SetBool("MoveRight", false);
             animator.SetBool("MoveLeft", false);
         }
+    }
+
+    public void OnBeingHit() 
+    {
+        isHurt = true;
+        animator.SetBool("Hurt", isHurt);
+    }
+
+    public void OnBeingHitDone()
+    {
+        isHurt = false;
+        animator.SetBool("Hurt", isHurt);
     }
 }
