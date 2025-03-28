@@ -7,7 +7,7 @@ public class Character : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private int playerSide;
     [SerializeField] private float movementSpeed = 5f;
-    [SerializeField] private float throwRange = 1f;
+    [SerializeField] private float throwRange = 1.9f;
     [SerializeField] private float throwForce = 200000f;
 
     [Header("Components")]
@@ -45,6 +45,7 @@ public class Character : MonoBehaviour
     private bool isReadyToFight;
     private bool isThrowing;
     private bool beingThrown;
+    float distanceFromOpponent;
 
     private readonly int idleHash = Animator.StringToHash("Idle");
     private readonly int walkFrontHash = Animator.StringToHash("WalkFront");
@@ -69,6 +70,8 @@ public class Character : MonoBehaviour
     private void Update()
     {
         //if (!isReadyToFight) return;
+
+        Debug.Log("distanceFromOpponent: " + distanceFromOpponent);
 
         block = false;
         animator.SetBool("Block", false);
@@ -187,14 +190,14 @@ public class Character : MonoBehaviour
 
     private void HandleThrowState()
     {
-        animator.SetBool(throwHash, true);
+        animator.SetBool(throwHash,true);
 
-        if (IsAnimationFinished() && !youWin)
-        {
-            youWin = true;
-            audioSource.PlayOneShot(youWinSound);
-            animator.SetTrigger(youWinHash);
-        }
+        //if (IsAnimationFinished() && !youWin)
+        //{
+        //    youWin = true;
+        //    audioSource.PlayOneShot(youWinSound);
+        //    animator.SetTrigger(youWinHash);
+        //}
     }
 
     private void HandleAttackState()
@@ -327,17 +330,14 @@ public class Character : MonoBehaviour
         rb.velocity = Vector2.zero;
     }
 
-    private bool IsAnimationFinished()
-    {
-        return animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f;
-    }
+
 
     private bool IsOpponentWithinThrowRange()
     {
         if (opponent == null) return false;
 
-        float distance = Vector2.Distance(transform.position, opponent.transform.position);
-        return distance < throwRange;
+        distanceFromOpponent = Vector2.Distance(transform.position, opponent.transform.position);
+        return distanceFromOpponent < throwRange;
     }
 
     // Public properties and methods

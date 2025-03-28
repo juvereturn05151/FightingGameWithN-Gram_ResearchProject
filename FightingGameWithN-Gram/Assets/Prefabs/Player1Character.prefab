@@ -222,7 +222,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerSide: 0
   movementSpeed: 5
-  throwRange: 1
+  throwRange: 1.9
   throwForce: 10
   animator: {fileID: 7817402320201100624}
   rb: {fileID: 3000253748812480465}
