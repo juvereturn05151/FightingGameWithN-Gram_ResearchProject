@@ -156,19 +156,11 @@ public class Character : MonoBehaviour
 
     private void HandleAttackState()
     {
-        legHurtBox.enabled = isAttacking;
-
         if (isAttacking)
         {
             animator.SetBool(attackHash, true);
-            hitBox.enabled = animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.2f &&
-                           animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.8f;
 
-            if (IsAnimationFinished())
-            {
-                isAttacking = false;
-                animator.SetBool(attackHash, false);
-            }
+
             return;
         }
 
@@ -192,6 +184,12 @@ public class Character : MonoBehaviour
             Attack();
             return;
         }
+    }
+
+    public void OnAttackFinished() 
+    {
+        isAttacking = false;
+        animator.SetBool(attackHash, false);
     }
 
     private void HandleMovement()
