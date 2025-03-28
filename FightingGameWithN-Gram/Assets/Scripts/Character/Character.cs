@@ -40,6 +40,7 @@ public class Character : MonoBehaviour
     private bool hitConfirmSuccess;
     private bool youWin;
     private bool youLose;
+    private bool block;
     private bool isBlocking;
     private bool isReadyToFight;
     private bool isThrowing;
@@ -69,9 +70,10 @@ public class Character : MonoBehaviour
     {
         //if (!isReadyToFight) return;
 
+        block = false;
+
         if (youLose)
         {
-
             return;
         }
 
@@ -116,10 +118,7 @@ public class Character : MonoBehaviour
     {
         animator.SetBool(youLoseHash, true);
 
-        if (!audioSource.isPlaying)
-        {
-            audioSource.PlayOneShot(hurtSound);
-        }
+        audioSource.PlayOneShot(hurtSound);
 
         // Apply lose force
         float forceDirection = playerSide == 0 ? -throwForce : throwForce;
@@ -223,6 +222,7 @@ public class Character : MonoBehaviour
     private void HandleMovement()
     {
         Vector2 moveInput = moveAction.action.ReadValue<Vector2>();
+
         Vector2 movement = new Vector2(moveInput.x * movementSpeed * Time.deltaTime, 0);
 
         transform.Translate(movement);
@@ -246,7 +246,7 @@ public class Character : MonoBehaviour
             // Check for blocking
             if ((playerSide == 0 && !movingRight) || (playerSide == 1 && movingRight))
             {
-                isBlocking = true;
+                block = true;
                 animator.SetBool(blockHash, true);
                 hitBox.enabled = false;
             }
@@ -256,7 +256,7 @@ public class Character : MonoBehaviour
             animator.SetBool(walkFrontHash, false);
             animator.SetBool(walkBackHash, false);
             animator.SetBool(blockHash, false);
-            isBlocking = false;
+            block = false;
         }
     }
 
