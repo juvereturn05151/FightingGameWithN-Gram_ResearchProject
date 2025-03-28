@@ -9,7 +9,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: MoveRight
+    m_ConditionEvent: WalkFront
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 828227039263777856}
@@ -322,13 +322,13 @@ AnimatorController:
   m_Name: Ryu_Animator
   serializedVersion: 5
   m_AnimatorParameters:
-  - m_Name: MoveRight
+  - m_Name: WalkFront
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: MoveLeft
+  - m_Name: WalkBack
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -624,7 +624,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: MoveRight
+    m_ConditionEvent: WalkFront
     m_EventTreshold: 0
   - m_ConditionMode: 2
     m_ConditionEvent: Attack
@@ -657,7 +657,7 @@ AnimatorStateMachine:
     m_Position: {x: 160, y: 130, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 828227039263777856}
-    m_Position: {x: 680, y: 370, z: 0}
+    m_Position: {x: 740, y: 330, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -75683845227548533}
     m_Position: {x: 390, y: -30, z: 0}
@@ -726,7 +726,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: MoveLeft
+    m_ConditionEvent: WalkBack
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -75683845227548533}
@@ -751,7 +751,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: MoveLeft
+    m_ConditionEvent: WalkBack
     m_EventTreshold: 0
   - m_ConditionMode: 2
     m_ConditionEvent: Attack

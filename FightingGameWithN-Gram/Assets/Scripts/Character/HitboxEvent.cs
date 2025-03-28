@@ -10,10 +10,10 @@ public class HitboxEvent : MonoBehaviour
             {
                 if (collision.GetComponentInParent<Character>() is Character character)
                 {
-                    if (!character.CharacterAttack.CanHitConfirm) 
-                    {
-                        character.OnBeingHit();
-                    }
+                    //if (!character.CharacterAttack.CanHitConfirm) 
+                    //{
+                    //    character.OnBeingHit();
+                    //}
                 }
             }
         }
