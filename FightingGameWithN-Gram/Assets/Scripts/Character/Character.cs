@@ -99,7 +99,11 @@ public class Character : MonoBehaviour
         }
 
         HandleAttackState();
-        HandleMovement();
+
+        if (!isAttacking) 
+        {
+            HandleMovement();
+        }
     }
 
     private void HandleLoseState()
@@ -140,6 +144,7 @@ public class Character : MonoBehaviour
     {
         isHurt = false;
         animator.SetBool(hurtHash, false);
+        isAttacking = false;
     }
 
     private void HandleThrowState()
@@ -252,6 +257,8 @@ public class Character : MonoBehaviour
         if (youLose) return;
 
         isHurt = true;
+        isAttacking = false;
+        animator.SetBool(attackHash, false);
         audioSource.PlayOneShot(hitSound);
         hitBox.enabled = false;
     }
@@ -259,6 +266,7 @@ public class Character : MonoBehaviour
     public void Attack()
     {
         isAttacking = true;
+        hitBox.enabled = true;
         audioSource.PlayOneShot(attackSound);
     }
 
