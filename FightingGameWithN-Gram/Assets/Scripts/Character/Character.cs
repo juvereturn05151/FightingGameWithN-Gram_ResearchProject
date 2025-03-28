@@ -255,8 +255,6 @@ public class Character : MonoBehaviour
                 animator.SetBool(movingRight ? walkBackHash : walkFrontHash, true);
             }
 
-
-
             // Check for blocking
             if ((playerSide == 0 && !movingRight) || (playerSide == 1 && movingRight))
             {
