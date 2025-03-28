@@ -659,10 +659,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player2Character
       objectReference: {fileID: 0}
-    - target: {fileID: 4014827667493785138, guid: 2297467dc93fe8d43a62b77d7d3ebd0b, type: 3}
-      propertyPath: m_LinearDrag
-      value: 7.53
-      objectReference: {fileID: 0}
     - target: {fileID: 5015764529345765313, guid: 2297467dc93fe8d43a62b77d7d3ebd0b, type: 3}
       propertyPath: m_LocalScale.x
       value: -3.078037

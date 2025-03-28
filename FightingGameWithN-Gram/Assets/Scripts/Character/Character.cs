@@ -71,6 +71,7 @@ public class Character : MonoBehaviour
         //if (!isReadyToFight) return;
 
         block = false;
+        animator.SetBool("Block", false);
 
         if (youLose)
         {
@@ -108,10 +109,23 @@ public class Character : MonoBehaviour
 
         HandleAttackState();
 
-        if (!isAttacking) 
+        if (!isAttacking && !animator.GetCurrentAnimatorStateInfo(0).IsName("Block_Animation")) 
         {
             HandleMovement();
         }
+
+        if (isBlocking)
+        {
+            HandleIsBlocking();
+            return;
+        }
+    }
+
+    private void HandleIsBlocking() 
+    {
+        animator.SetBool("Block", true);
+        hitBox.enabled = false;
+        isBlocking = false;
     }
 
     private void HandleLoseState()
@@ -247,7 +261,6 @@ public class Character : MonoBehaviour
             if ((playerSide == 0 && !movingRight) || (playerSide == 1 && movingRight))
             {
                 block = true;
-                animator.SetBool(blockHash, true);
                 hitBox.enabled = false;
             }
         }
@@ -255,7 +268,6 @@ public class Character : MonoBehaviour
         {
             animator.SetBool(walkFrontHash, false);
             animator.SetBool(walkBackHash, false);
-            animator.SetBool(blockHash, false);
             block = false;
         }
     }
@@ -271,9 +283,15 @@ public class Character : MonoBehaviour
 
     public void TriggerHurt()
     {
-        if (isBlocking)
+        if (block)
         {
-            audioSource.PlayOneShot(guardSound);
+            Debug.Log("Inside hurt");
+            if (!isBlocking)
+            {
+                isBlocking = true;
+                audioSource.PlayOneShot(guardSound);
+            }
+
             return;
         }
 
