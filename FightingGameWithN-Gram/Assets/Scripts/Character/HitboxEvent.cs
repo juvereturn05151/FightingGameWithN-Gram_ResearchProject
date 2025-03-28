@@ -10,7 +10,6 @@ public class HitboxEvent : MonoBehaviour
             {
                 if (collision.GetComponentInParent<Character>() is Character character)
                 {
-                    Debug.Log("Hit");
                     character.TriggerHurt();
                 }
             }

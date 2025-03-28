@@ -8,7 +8,7 @@ public class Character : MonoBehaviour
     [SerializeField] private int playerSide;
     [SerializeField] private float movementSpeed = 5f;
     [SerializeField] private float throwRange = 1f;
-    [SerializeField] private float throwForce = 10f;
+    [SerializeField] private float throwForce = 200000f;
 
     [Header("Components")]
     [SerializeField] private Animator animator;
@@ -54,7 +54,7 @@ public class Character : MonoBehaviour
     private readonly int throwHash = Animator.StringToHash("Throw");
     private readonly int youWinHash = Animator.StringToHash("YouWin");
     private readonly int youLoseHash = Animator.StringToHash("YouLose");
-
+    private readonly int hitConfirmHash = Animator.StringToHash("HitConfirm");
 
     public Animator Animator => animator;
 
@@ -71,7 +71,7 @@ public class Character : MonoBehaviour
 
         if (youLose)
         {
-            HandleLoseState();
+
             return;
         }
 
@@ -83,6 +83,12 @@ public class Character : MonoBehaviour
         if (hitConfirmSuccess)
         {
             HandleHitConfirmSuccess();
+            return;
+        }
+
+        if (isAbleToHitConfirm) 
+        {
+            HandleIsAbleToHitConfirmState();
             return;
         }
 
@@ -117,7 +123,20 @@ public class Character : MonoBehaviour
 
         // Apply lose force
         float forceDirection = playerSide == 0 ? -throwForce : throwForce;
-        rb.AddForce(new Vector2(forceDirection, 0), ForceMode2D.Impulse);
+        rb.AddForce(new Vector2(forceDirection, throwForce), ForceMode2D.Impulse);
+    }
+
+    private void HandleIsAbleToHitConfirmState() 
+    {
+        if (!hitConfirmSuccess)
+        {
+            if (attackAction.action.WasPressedThisFrame())
+            {
+                animator.SetTrigger(hitConfirmHash);
+                hitConfirmSuccess = true;
+                return;
+            }
+        }
     }
 
     private void HandleHitConfirmSuccess()
@@ -126,12 +145,17 @@ public class Character : MonoBehaviour
         {
             audioSource.PlayOneShot(hitConfirmSound);
         }
+    }
 
-        if (IsAnimationFinished() && !youWin)
+    public void OnHitConfirmSuccessFinished() 
+    {
+        if (!youWin)
         {
             youWin = true;
             audioSource.PlayOneShot(youWinSound);
             animator.SetTrigger(youWinHash);
+            opponent.SetYouLose(true);
+
         }
     }
 
@@ -145,6 +169,7 @@ public class Character : MonoBehaviour
         isHurt = false;
         animator.SetBool(hurtHash, false);
         isAttacking = false;
+        opponent.SetCanHitConfirm(false);
     }
 
     private void HandleThrowState()
@@ -164,8 +189,6 @@ public class Character : MonoBehaviour
         if (isAttacking)
         {
             animator.SetBool(attackHash, true);
-
-
             return;
         }
 
@@ -261,6 +284,8 @@ public class Character : MonoBehaviour
         animator.SetBool(attackHash, false);
         audioSource.PlayOneShot(hitSound);
         hitBox.enabled = false;
+
+        opponent.SetCanHitConfirm(true);
     }
 
     public void Attack()
@@ -310,8 +335,15 @@ public class Character : MonoBehaviour
     public bool BeingThrown => beingThrown;
 
     public void SetCanHitConfirm(bool canHit) => isAbleToHitConfirm = canHit;
-    public void SetYouWin(bool win) => youWin = win;
-    public void SetYouLose(bool lose) => youLose = lose;
+    public void SetYouLose(bool lose) 
+    {
+        youLose = lose;
+
+        if (youLose) 
+        {
+            HandleLoseState();
+        }
+    }
     public void SetIsReadyToFight(bool ready) => isReadyToFight = ready;
     public void SetOpponent(Character opp) => opponent = opp;
     public void SetBeingThrown(bool thrown) => beingThrown = thrown;
