@@ -14,6 +14,7 @@ public class Character : MonoBehaviour
 
     [SerializeField]
     private CharacterAttack characterAttack;
+    public CharacterAttack CharacterAttack => characterAttack;
 
     private bool isHurt;
     public bool IsHurt => isHurt;
@@ -42,6 +43,11 @@ public class Character : MonoBehaviour
         {
             animator.SetBool("Lose", isLose);
             return;
+        }
+
+        if (!opponent.IsHurt) 
+        {
+            characterAttack.CanHitConfirm = false;
         }
 
         if (isHurt)
@@ -132,6 +138,7 @@ public class Character : MonoBehaviour
             return;
         }
 
+        opponent.characterAttack.CanHitConfirm = true;
         isHurt = true;
         characterAttack.OnAttackEnd();
         animator.SetBool("Attack", false);

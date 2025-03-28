@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class HitboxEvent : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         
@@ -18,15 +17,17 @@ public class HitboxEvent : MonoBehaviour
     {
         if (collision != null) 
         {
-            if (collision.CompareTag("Hurtbox")) 
+            if (collision.CompareTag("Hurtbox"))
             {
-                if (collision.GetComponentInParent<Character>() is Character character) 
+                if (collision.GetComponentInParent<Character>() is Character character)
                 {
-                    character.OnBeingHit();
+                    if (!character.CharacterAttack.CanHitConfirm) 
+                    {
+                        character.OnBeingHit();
+                    }
                 }
-
-                Debug.Log("Hit");
             }
+
         }
     }
 }

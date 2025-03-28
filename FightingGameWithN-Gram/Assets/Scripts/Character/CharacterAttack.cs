@@ -17,6 +17,8 @@ public class CharacterAttack : MonoBehaviour
 
     public bool ExecuteHitConfirm => executeHitConfirm;
 
+    public bool CanHitConfirm;
+
     public void Init(Character character) 
     {
         this.character = character;
