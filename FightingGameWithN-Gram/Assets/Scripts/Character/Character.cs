@@ -2,50 +2,44 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-    [SerializeField]
-    private int playerSide;
+    [Header("Components")]
+    [SerializeField] private Animator animator;
+    [SerializeField] private CharacterMovement characterMovement;
+    [SerializeField] private CharacterAttack characterAttack;
 
-    [SerializeField]
-    private Animator animator;
-    public Animator Animator=>animator;
-
-    [SerializeField]
-    private CharacterMovement characterMovement;
-
-    [SerializeField]
-    private CharacterAttack characterAttack;
-    public CharacterAttack CharacterAttack => characterAttack;
-
-    private bool isHurt;
-    public bool IsHurt => isHurt;
-
-    private bool isLose;
+    [Header("Settings")]
+    [SerializeField] private int playerSide;
 
     private Character opponent;
+    private bool isHurt;
+    private bool isLose;
 
-    void Start()
+    public Animator Animator => animator;
+    public CharacterAttack CharacterAttack => characterAttack;
+    public bool IsHurt => isHurt;
+
+    private void Start()
     {
-        if (playerSide == 0)
-        {
-            opponent = GameManager.Instance.character2;
-        }
-        else 
-        {
-            opponent = GameManager.Instance.character1;
-        }
-
+        opponent = playerSide == 0 ? GameManager.Instance.character2 : GameManager.Instance.character1;
         characterAttack.Init(this);
     }
 
-    void Update()
+    private void Update()
     {
-        if (isLose) 
+        if (isLose)
         {
-            animator.SetBool("Lose", isLose);
+            animator.SetBool("Lose", true);
             return;
         }
 
-        if (!opponent.IsHurt) 
+        HandleAttackState();
+        HandleMovementState();
+        UpdateAnimation();
+    }
+
+    private void HandleAttackState()
+    {
+        if (!opponent.IsHurt)
         {
             characterAttack.CanHitConfirm = false;
         }
@@ -55,99 +49,73 @@ public class Character : MonoBehaviour
             characterAttack.OnAttackEnd();
             animator.SetBool("Attack", false);
         }
-        else 
+        else
         {
-            characterAttack.AttackUpdate(opponent.IsHurt && opponent.Animator.GetCurrentAnimatorStateInfo(0).IsName("Hurt_Animation"));
+            bool canHitConfirm = opponent.IsHurt && opponent.Animator.GetCurrentAnimatorStateInfo(0).IsName("Hurt_Animation");
+            characterAttack.AttackUpdate(canHitConfirm);
         }
-
-
 
         if (characterAttack.ExecuteHitConfirm)
         {
             opponent.SetIsLose(true);
             animator.SetBool("HitConfirm", true);
-            return;
         }
+    }
 
-
+    private void HandleMovementState()
+    {
         if (characterAttack.IsAttack)
         {
             characterMovement.ResetMoveDirection();
         }
-        else 
+        else
         {
             characterMovement.MovementUpdate();
         }
-
-        UpdateAnimation();
     }
 
-    private void UpdateAnimation() 
+    private void UpdateAnimation()
     {
-        if (animator == null) 
-        {
-            return;
-        }
+        if (animator == null) return;
 
         animator.SetBool("Attack", characterAttack.IsAttack);
+        UpdateMovementAnimation();
+    }
 
+    private void UpdateMovementAnimation()
+    {
+        bool movingRight = characterMovement.MoveDirection.x >= 0.5f;
+        bool movingLeft = characterMovement.MoveDirection.x <= -0.5f;
 
-        if (characterMovement.MoveDirection.x >= 0.5f)
+        if (playerSide == 0)
         {
-            if (playerSide == 0)
-            {
-                animator.SetBool("MoveRight", true);
-            }
-            else
-            {
-                animator.SetBool("MoveLeft", true);
-            }
+            animator.SetBool("MoveRight", movingRight);
+            animator.SetBool("MoveLeft", movingLeft);
         }
-        else if (characterMovement.MoveDirection.x <= -0.5f)
+        else
         {
-            if (playerSide == 0)
-            {
-                animator.SetBool("MoveLeft", true);
-            }
-            else
-            {
-                animator.SetBool("MoveRight", true);
-            }
-        }
-        else 
-        {
-            animator.SetBool("MoveRight", false);
-            animator.SetBool("MoveLeft", false);
+            animator.SetBool("MoveRight", movingLeft);
+            animator.SetBool("MoveLeft", movingRight);
         }
     }
 
-    public void OnExecuteHitConfirmDone() 
-    {
-        opponent.SetIsLose(true);
-    }
+    public void OnExecuteHitConfirmDone() => opponent.SetIsLose(true);
+    public void SetIsLose(bool lose) => isLose = lose;
 
-    public void SetIsLose(bool lose)
+    public void OnBeingHit()
     {
-        isLose = lose;
-    }
-
-    public void OnBeingHit() 
-    {
-        if (isHurt) 
-        {
-            return;
-        }
+        if (isHurt) return;
 
         opponent.characterAttack.CanHitConfirm = true;
         isHurt = true;
         characterAttack.OnAttackEnd();
         animator.SetBool("Attack", false);
-        animator.SetBool("Hurt", isHurt);
+        animator.SetBool("Hurt", true);
     }
 
     public void OnBeingHitDone()
     {
         isHurt = false;
-        animator.SetBool("Hurt", isHurt);
+        animator.SetBool("Hurt", false);
     }
 }

@@ -3,46 +3,31 @@ using UnityEngine.InputSystem;
 
 public class CharacterAttack : MonoBehaviour
 {
-    [SerializeField] 
-    private InputActionReference attack;
-
-    [SerializeField]
+    [SerializeField] private InputActionReference attack;
     private Character character;
 
-    private bool isAttack;
+    public bool IsAttack { get; private set; }
+    public bool ExecuteHitConfirm { get; private set; }
+    public bool CanHitConfirm { get; set; }
 
-    public bool IsAttack => isAttack;
-
-    private bool executeHitConfirm;
-
-    public bool ExecuteHitConfirm => executeHitConfirm;
-
-    public bool CanHitConfirm;
-
-    public void Init(Character character) 
-    {
-        this.character = character;
-    }
+    public void Init(Character character) => this.character = character;
 
     public void AttackUpdate(bool canHitConfirm)
     {
-        if (canHitConfirm) 
+        if (canHitConfirm && attack.ToInputAction().WasPressedThisFrame())
         {
-            if (attack.ToInputAction().WasPressedThisFrame())
-            {
-                executeHitConfirm = true;
-                return;
-            }
+            ExecuteHitConfirm = true;
+            return;
         }
 
         if (attack.ToInputAction().WasPressedThisFrame())
         {
-            isAttack = true;
+            IsAttack = true;
         }
     }
 
-    public void OnAttackEnd() 
+    public void OnAttackEnd()
     {
-        isAttack = false;
+        IsAttack = false;
     }
 }
