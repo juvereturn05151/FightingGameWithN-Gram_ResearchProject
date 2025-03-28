@@ -134,12 +134,12 @@ public class Character : MonoBehaviour
     private void HandleHurtState()
     {
         animator.SetBool(hurtHash, true);
+    }
 
-        if (IsAnimationFinished())
-        {
-            isHurt = false;
-            animator.SetBool(hurtHash, false);
-        }
+    public void OnHurtFinished()
+    {
+        isHurt = false;
+        animator.SetBool(hurtHash, false);
     }
 
     private void HandleThrowState()
