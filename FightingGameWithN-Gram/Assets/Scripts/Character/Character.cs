@@ -285,7 +285,6 @@ public class Character : MonoBehaviour
     {
         if (block)
         {
-            Debug.Log("Inside hurt");
             if (!isBlocking)
             {
                 isBlocking = true;
@@ -297,6 +296,7 @@ public class Character : MonoBehaviour
 
         if (youLose) return;
 
+        animator.SetTrigger(hurtHash);
         isHurt = true;
         isAttacking = false;
         animator.SetBool(attackHash, false);
