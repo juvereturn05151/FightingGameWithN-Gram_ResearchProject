@@ -221,10 +221,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74d9e1820c038f14bb6e94842f9a7507, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSide: 0
   animator: {fileID: 7817402320201100624}
   characterMovement: {fileID: 7935416204798642169}
   characterAttack: {fileID: 4678343804409546276}
+  playerSide: 0
 --- !u!114 &7935416204798642169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -253,8 +253,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attack: {fileID: 5149656613758003984, guid: 6905212044b45e241980026cfca3626d, type: 3}
-  character: {fileID: 0}
-  CanHitConfirm: 0
 --- !u!1 &3571857433398700396
 GameObject:
   m_ObjectHideFlags: 0
