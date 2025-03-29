@@ -175,6 +175,16 @@ public class Character : MonoBehaviour
         }
     }
 
+    public void OnThrowFinished()
+    {
+        if (!youWin)
+        {
+            youWin = true;
+            audioSource.PlayOneShot(youWinSound);
+            opponent.SetYouLose(true);
+        }
+    }
+
     private void HandleHurtState()
     {
         animator.SetBool(hurtHash, true);
@@ -191,13 +201,6 @@ public class Character : MonoBehaviour
     private void HandleThrowState()
     {
         animator.SetBool(throwHash,true);
-
-        //if (IsAnimationFinished() && !youWin)
-        //{
-        //    youWin = true;
-        //    audioSource.PlayOneShot(youWinSound);
-        //    animator.SetTrigger(youWinHash);
-        //}
     }
 
     private void HandleAttackState()
@@ -276,7 +279,7 @@ public class Character : MonoBehaviour
     private void ExecuteThrow()
     {
         isThrowing = true;
-        float xOffset = playerSide == 0 ? -1.75f : 1.75f;
+        float xOffset = playerSide == 0 ? 1.75f : -1.75f;
 
         opponent.transform.position = transform.position + new Vector3(xOffset, 2f, 0);
         opponent.SetBeingThrown(true);

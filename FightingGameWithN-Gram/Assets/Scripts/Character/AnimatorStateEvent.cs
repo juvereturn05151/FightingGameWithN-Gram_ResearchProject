@@ -7,4 +7,6 @@ public class AnimatorStateEvent : MonoBehaviour
     public void OnAttackFinished() => character.OnAttackFinished();
     public void OnHurtFinished() => character.OnHurtFinished();
     public void OnHitConfirmSuccessFinished() => character.OnHitConfirmSuccessFinished();
+
+    public void OnThrowFinished() => character.OnThrowFinished();
 }
