@@ -69,7 +69,7 @@ public class Character : MonoBehaviour
 
     private void Update()
     {
-        //if (!isReadyToFight) return;
+        if (!isReadyToFight) return;
 
         Debug.Log("distanceFromOpponent: " + distanceFromOpponent);
 
@@ -366,4 +366,9 @@ public class Character : MonoBehaviour
     public void SetIsReadyToFight(bool ready) => isReadyToFight = ready;
     public void SetOpponent(Character opp) => opponent = opp;
     public void SetBeingThrown(bool thrown) => beingThrown = thrown;
+
+    public void SetIsReadyToPlay(bool isReady) 
+    {
+        isReadyToFight = isReady;
+    }
 }
