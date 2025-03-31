@@ -46,6 +46,7 @@ public class Character : MonoBehaviour
     private bool isReadyToFight;
     private bool isThrowing;
     private bool beingThrown;
+    private bool hasSetOriginalPos;
     private int currentHealth;
     private float distanceFromOpponent;
 
@@ -61,11 +62,15 @@ public class Character : MonoBehaviour
     private readonly int youLoseHash = Animator.StringToHash("YouLose");
     private readonly int hitConfirmHash = Animator.StringToHash("HitConfirm");
 
+    private Vector3 originalPosition;
+
     public Animator Animator => animator;
 
     private void Start()
     {
         opponent = playerSide == 0 ? GameManager.Instance.character2 : GameManager.Instance.character1;
+        originalPosition = this.transform.position;
+        hasSetOriginalPos = true;
         Init();
     }
 
@@ -347,6 +352,12 @@ public class Character : MonoBehaviour
         animator.SetBool(youWinHash, false);
         animator.SetBool(youLoseHash, false);
         animator.SetBool(hitConfirmHash, false);
+
+        if (hasSetOriginalPos) 
+        {
+            this.transform.position = originalPosition;
+        }
+
         rb.velocity = Vector2.zero;
     }
 
