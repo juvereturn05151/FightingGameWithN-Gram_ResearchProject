@@ -136,4 +136,12 @@ public class GameManager : MonoBehaviour
         if (character2 != null) character2.SetIsReadyToPlay(enable);
     }
 
+    public void Restart() 
+    {
+        if (character1 != null) character1.Init();
+        if (character2 != null) character2.Init();
+
+        ChangeState(GameState.Ready);
+    }
+
 }

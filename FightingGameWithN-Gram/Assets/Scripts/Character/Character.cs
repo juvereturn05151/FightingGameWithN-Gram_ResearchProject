@@ -134,9 +134,10 @@ public class Character : MonoBehaviour
         }
     }
 
-    private void Init()
+    public void Init()
     {
         currentHealth = maxHealth;
+        OnHealthChanged?.Invoke(playerSide, currentHealth);
     }
 
     private void HandleIsBlocking() 
@@ -418,6 +419,5 @@ public class Character : MonoBehaviour
         {
             GameManager.Instance.ChangeState(GameState.RoundEnd);
         }
-
     }
 }
