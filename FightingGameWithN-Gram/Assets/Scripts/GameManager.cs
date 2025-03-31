@@ -110,13 +110,13 @@ public class GameManager : MonoBehaviour
                 // Show "Fight!" UI
                 break;
 
-            case GameState.RoundEnd:
-                _stateTimer = roundEndDuration;
-                break;
-
             case GameState.Gameplay:
                 // Enable character controls
                 EnableCharacterControls(true);
+                break;
+
+            case GameState.RoundEnd:
+                _stateTimer = roundEndDuration;
                 break;
         }
 

@@ -64,6 +64,8 @@ public class Character : MonoBehaviour
 
     private Vector3 originalPosition;
 
+
+    public event System.Action<int, int> OnHealthChanged;
     public Animator Animator => animator;
 
     private void Start()
@@ -71,6 +73,7 @@ public class Character : MonoBehaviour
         opponent = playerSide == 0 ? GameManager.Instance.character2 : GameManager.Instance.character1;
         originalPosition = this.transform.position;
         hasSetOriginalPos = true;
+        OnHealthChanged += UIManager.Instance.UpdatePlayerHealth;
         Init();
     }
 
@@ -384,6 +387,10 @@ public class Character : MonoBehaviour
     public void SetCanHitConfirm(bool canHit) => isAbleToHitConfirm = canHit;
     public void SetYouLose(bool lose) 
     {
+        currentHealth -= 1;
+
+        OnHealthChanged?.Invoke(playerSide, currentHealth);
+
         youLose = lose;
 
         if (youLose) 
@@ -402,6 +409,15 @@ public class Character : MonoBehaviour
 
     public void OnYouLoseFinished() 
     {
-        GameManager.Instance.ChangeState(GameState.RoundEnd);
+        if (currentHealth <= 0)
+        {
+            UIManager.Instance.UpdateWinnerText(opponent.PlayerSide);
+            GameManager.Instance.ChangeState(GameState.MatchEnd);
+        }
+        else 
+        {
+            GameManager.Instance.ChangeState(GameState.RoundEnd);
+        }
+
     }
 }

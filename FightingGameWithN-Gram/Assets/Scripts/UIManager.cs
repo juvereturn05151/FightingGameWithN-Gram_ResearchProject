@@ -46,4 +46,16 @@ public class UIManager : MonoBehaviour
         if (playerID == 0) _player1Health.SetHealth(currentHealth);
         else _player2Health.SetHealth(currentHealth);
     }
+
+    public void UpdateWinnerText(int winnerID) 
+    {
+        if (winnerID == 0)
+        {
+            _winnerText.text = "Player 1 Win";
+        }
+        else 
+        {
+            _winnerText.text = "Player 2 Win";
+        }
+    }
 }
