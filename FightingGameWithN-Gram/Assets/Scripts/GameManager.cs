@@ -4,7 +4,9 @@ public enum GameState
 {
     Ready,
     Fight,
-    Gameplay
+    Gameplay,
+    RoundEnd,
+    MatchEnd
 }
 
 public class GameManager : MonoBehaviour
@@ -17,8 +19,7 @@ public class GameManager : MonoBehaviour
     // State durations
     [SerializeField] private float readyDuration = 3f;
     [SerializeField] private float fightDuration = 1f;
-    [SerializeField] private GameObject _ready;
-    [SerializeField] private GameObject _fight;
+    [SerializeField] private float roundEndDuration = 1f;
 
     public static GameManager Instance
     {
@@ -70,6 +71,9 @@ public class GameManager : MonoBehaviour
                 if (_stateTimer <= 0) ChangeState(GameState.Gameplay);
                 break;
 
+            case GameState.RoundEnd:
+                if (_stateTimer <= 0) ChangeState(GameState.Ready);
+                break;
                 // Add other state transitions as needed
         }
     }
@@ -81,16 +85,16 @@ public class GameManager : MonoBehaviour
         {
             case GameState.Ready:
                 // Hide "Ready" UI
-                _ready.SetActive(false);
                 break;
             case GameState.Fight:
                 // Hide "Fight!" UI
-                _fight.SetActive(false);
                 break;
         }
 
         // Enter new state
         _currentState = newState;
+
+        UIManager.Instance.UpdateGameState(_currentState);
 
         switch (newState)
         {
@@ -98,14 +102,16 @@ public class GameManager : MonoBehaviour
                 _stateTimer = readyDuration;
                 // Show "Ready" UI
                 // Reset character positions
-                _ready.SetActive(true);
                 ResetState();
                 break;
 
             case GameState.Fight:
                 _stateTimer = fightDuration;
-                _fight.SetActive(true);
                 // Show "Fight!" UI
+                break;
+
+            case GameState.RoundEnd:
+                _stateTimer = roundEndDuration;
                 break;
 
             case GameState.Gameplay:

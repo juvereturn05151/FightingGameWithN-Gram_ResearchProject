@@ -1,11 +1,12 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static UnityEngine.Rendering.DebugUI;
 
 public class Character : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField] private int playerSide;
+    [Range(1,3)]
+    [SerializeField] private int maxHealth;
     [SerializeField] private float movementSpeed = 5f;
     [SerializeField] private float throwRange = 1.9f;
     [SerializeField] private float throwForce = 200000f;
@@ -45,7 +46,8 @@ public class Character : MonoBehaviour
     private bool isReadyToFight;
     private bool isThrowing;
     private bool beingThrown;
-    float distanceFromOpponent;
+    private int currentHealth;
+    private float distanceFromOpponent;
 
     private readonly int idleHash = Animator.StringToHash("Idle");
     private readonly int walkFrontHash = Animator.StringToHash("WalkFront");
@@ -53,6 +55,7 @@ public class Character : MonoBehaviour
     private readonly int attackHash = Animator.StringToHash("Attack");
     private readonly int hurtHash = Animator.StringToHash("Hurt");
     private readonly int blockHash = Animator.StringToHash("Block");
+    private readonly string blockAnimation = "Block_Animation";
     private readonly int throwHash = Animator.StringToHash("Throw");
     private readonly int youWinHash = Animator.StringToHash("YouWin");
     private readonly int youLoseHash = Animator.StringToHash("YouLose");
@@ -63,18 +66,17 @@ public class Character : MonoBehaviour
     private void Start()
     {
         opponent = playerSide == 0 ? GameManager.Instance.character2 : GameManager.Instance.character1;
-
-        ResetState();
+        Init();
     }
 
     private void Update()
     {
         if (!isReadyToFight) return;
 
-        Debug.Log("distanceFromOpponent: " + distanceFromOpponent);
+        //Debug.Log("distanceFromOpponent: " + distanceFromOpponent);
 
         block = false;
-        animator.SetBool("Block", false);
+        animator.SetBool(blockHash, false);
 
         if (youLose)
         {
@@ -112,7 +114,7 @@ public class Character : MonoBehaviour
 
         HandleAttackState();
 
-        if (!isAttacking && !animator.GetCurrentAnimatorStateInfo(0).IsName("Block_Animation")) 
+        if (!isAttacking && !animator.GetCurrentAnimatorStateInfo(0).IsName(blockAnimation)) 
         {
             HandleMovement();
         }
@@ -124,9 +126,14 @@ public class Character : MonoBehaviour
         }
     }
 
+    private void Init()
+    {
+        currentHealth = maxHealth;
+    }
+
     private void HandleIsBlocking() 
     {
-        animator.SetBool("Block", true);
+        animator.SetBool(blockHash, true);
         hitBox.enabled = false;
         isBlocking = false;
     }
@@ -169,7 +176,7 @@ public class Character : MonoBehaviour
         {
             youWin = true;
             audioSource.PlayOneShot(youWinSound);
-            animator.SetTrigger(youWinHash);
+            animator.SetBool(youWinHash, true);
             opponent.SetYouLose(true);
 
         }
@@ -329,7 +336,17 @@ public class Character : MonoBehaviour
         isReadyToFight = false;
         beingThrown = false;
         isThrowing = false;
+        isReadyToFight = false;
         animator.Play(idleHash);
+        animator.SetBool(walkBackHash, false);
+        animator.SetBool(walkFrontHash, false);
+        animator.SetBool(attackHash, false);
+        animator.SetBool(hurtHash, false);
+        animator.SetBool(blockHash, false);
+        animator.SetBool(throwHash, false);
+        animator.SetBool(youWinHash, false);
+        animator.SetBool(youLoseHash, false);
+        animator.SetBool(hitConfirmHash, false);
         rb.velocity = Vector2.zero;
     }
 
@@ -370,5 +387,10 @@ public class Character : MonoBehaviour
     public void SetIsReadyToPlay(bool isReady) 
     {
         isReadyToFight = isReady;
+    }
+
+    public void OnYouLoseFinished() 
+    {
+        GameManager.Instance.ChangeState(GameState.RoundEnd);
     }
 }

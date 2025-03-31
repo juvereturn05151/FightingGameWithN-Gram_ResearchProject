@@ -221,6 +221,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerSide: 0
+  maxHealth: 3
   movementSpeed: 5
   throwRange: 1.9
   throwForce: 10
