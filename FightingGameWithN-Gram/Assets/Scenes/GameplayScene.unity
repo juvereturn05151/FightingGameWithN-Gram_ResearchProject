@@ -854,6 +854,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2371029347350406274, guid: 2297467dc93fe8d43a62b77d7d3ebd0b, type: 3}
+      propertyPath: isAI
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2371029347350406274, guid: 2297467dc93fe8d43a62b77d7d3ebd0b, type: 3}
       propertyPath: moveAction
       value: 
       objectReference: {fileID: 7609104885679577605, guid: 27380f988e82a4f4f939f1ec490f3acf, type: 3}
