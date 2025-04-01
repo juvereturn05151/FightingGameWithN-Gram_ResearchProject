@@ -96,6 +96,12 @@ public class Character : MonoBehaviour
             return;
         }
 
+        if (isHurt)
+        {
+            HandleHurtState();
+            return;
+        }
+
         if (hitConfirmSuccess)
         {
             HandleHitConfirmSuccess();
@@ -105,12 +111,6 @@ public class Character : MonoBehaviour
         if (isAbleToHitConfirm) 
         {
             HandleIsAbleToHitConfirmState();
-            return;
-        }
-
-        if (isHurt)
-        {
-            HandleHurtState();
             return;
         }
 
