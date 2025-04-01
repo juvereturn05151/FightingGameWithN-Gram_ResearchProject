@@ -15,6 +15,7 @@ public class Character : MonoBehaviour
     [SerializeField] private bool isAI = false;
     [SerializeField] private float aiDecisionInterval = 0.5f;
     [SerializeField] private float aiAggressiveness = 0.5f; // 0-1 range
+    [SerializeField] private float aiThrowProbability = 0.3f; // Chance AI will use throw button
 
     [Header("Components")]
     [SerializeField] private Animator animator;
@@ -25,6 +26,7 @@ public class Character : MonoBehaviour
     [SerializeField] private InputActionReference moveAction;
     [SerializeField] private InputActionReference attackAction;
     [SerializeField] private InputActionReference blockAction;
+    [SerializeField] private InputActionReference throwAction;
 
     [SerializeField] private Collider2D hitBox;
     [SerializeField] private Collider2D hurtBox;
@@ -37,12 +39,15 @@ public class Character : MonoBehaviour
     [SerializeField] private AudioClip hitConfirmSound;
     [SerializeField] private AudioClip youWinSound;
     [SerializeField] private AudioClip hurtSound;
+    [SerializeField] private AudioClip throwSound;
+    [SerializeField] private AudioClip whiffThrowSound;
 
     private Character opponent;
     private float aiTimer = 0f;
     private Vector2 aiMoveInput;
     private bool aiAttackDecision;
     private bool aiBlockDecision;
+    private bool aiThrowDecision;
 
     private bool isAttacking;
     private bool isHurt;
@@ -71,6 +76,7 @@ public class Character : MonoBehaviour
     private readonly int youWinHash = Animator.StringToHash("YouWin");
     private readonly int youLoseHash = Animator.StringToHash("YouLose");
     private readonly int hitConfirmHash = Animator.StringToHash("HitConfirm");
+    private readonly int whiffThrowHash = Animator.StringToHash("WhiffThrow");
 
     private Vector3 originalPosition;
 
@@ -159,24 +165,36 @@ public class Character : MonoBehaviour
 
     private void MakeAIDecision()
     {
-        // Basic AI decision making - can be replaced with N-gram prediction
         distanceFromOpponent = Vector2.Distance(transform.position, opponent.transform.position);
 
-        // Simple AI logic - can be enhanced with N-grams
+        // Reset AI decisions
+        aiMoveInput = Vector2.zero;
+        aiAttackDecision = false;
+        aiBlockDecision = false;
+        aiThrowDecision = false;
+
         if (opponent.IsAttacking && distanceFromOpponent < 2f)
         {
             // Block if opponent is attacking and close
             aiBlockDecision = Random.value < 0.7f;
-            aiMoveInput = Vector2.zero;
         }
         else if (distanceFromOpponent < throwRange * 1.2f)
         {
             // Close range behavior
             if (Random.value < aiAggressiveness)
             {
-                // Attack or throw
-                aiAttackDecision = true;
-                aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? 1 : -1, 0);
+                // Decide between regular attack or throw
+                if (Random.value < aiThrowProbability)
+                {
+                    // Use throw button
+                    aiThrowDecision = true;
+                }
+                else
+                {
+                    // Use regular attack or movement throw
+                    aiAttackDecision = true;
+                    aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? 1 : -1, 0);
+                }
             }
             else
             {
@@ -199,17 +217,14 @@ public class Character : MonoBehaviour
                     new Vector2(opponent.transform.position.x > transform.position.x ? -0.5f : 0.5f, 0);
             }
         }
-
-        // For N-gram integration, you would replace the above with:
-        // GetNextActionFromNgram();
     }
 
-    // This method would be called by an N-gram prediction system
-    public void SetAIInput(Vector2 moveInput, bool attack, bool block)
+    public void SetAIInput(Vector2 moveInput, bool attack, bool block, bool throwInput)
     {
         aiMoveInput = moveInput;
         aiAttackDecision = attack;
         aiBlockDecision = block;
+        aiThrowDecision = throwInput;
     }
 
     public void Init()
@@ -302,6 +317,24 @@ public class Character : MonoBehaviour
             return;
         }
 
+        // Check for throw button input (new system)
+        bool throwPressed = isAI ? aiThrowDecision : throwAction.action.WasPressedThisFrame();
+        if (throwPressed)
+        {
+            if (IsOpponentWithinThrowRange())
+            {
+                ExecuteThrow();
+            }
+            else
+            {
+                // Whiff throw (missed throw)
+                animator.SetTrigger(whiffThrowHash);
+                audioSource.PlayOneShot(whiffThrowSound);
+            }
+            return;
+        }
+
+        // Original movement-based throw system
         if (IsOpponentWithinThrowRange())
         {
             bool attackPressed = isAI ? aiAttackDecision : attackAction.action.WasPressedThisFrame();
@@ -319,6 +352,7 @@ public class Character : MonoBehaviour
             }
         }
 
+        // Regular attack
         bool attackInput = isAI ? aiAttackDecision : attackAction.action.WasPressedThisFrame();
         if (attackInput)
         {
@@ -391,7 +425,13 @@ public class Character : MonoBehaviour
 
         opponent.transform.position = transform.position + new Vector3(xOffset, 2f, 0);
         opponent.SetBeingThrown(true);
-        if (isAI) aiAttackDecision = false;
+        audioSource.PlayOneShot(throwSound);
+
+        if (isAI)
+        {
+            aiAttackDecision = false;
+            aiThrowDecision = false;
+        }
     }
 
     public void TriggerHurt()
@@ -468,6 +508,7 @@ public class Character : MonoBehaviour
             aiMoveInput = Vector2.zero;
             aiAttackDecision = false;
             aiBlockDecision = false;
+            aiThrowDecision = false;
         }
     }
 
@@ -525,5 +566,10 @@ public class Character : MonoBehaviour
         {
             GameManager.Instance.ChangeState(GameState.RoundEnd);
         }
+    }
+
+    public void OnWhiffThrowFinished() 
+    {
+        animator.SetBool(whiffThrowHash, false);
     }
 }

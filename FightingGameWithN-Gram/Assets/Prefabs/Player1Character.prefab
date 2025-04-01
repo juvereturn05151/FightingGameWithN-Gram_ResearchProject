@@ -234,6 +234,7 @@ MonoBehaviour:
   moveAction: {fileID: 7609104885679577605, guid: 6905212044b45e241980026cfca3626d, type: 3}
   attackAction: {fileID: 5149656613758003984, guid: 6905212044b45e241980026cfca3626d, type: 3}
   blockAction: {fileID: -1486022434980959489, guid: 6905212044b45e241980026cfca3626d, type: 3}
+  throwAction: {fileID: 4313023434523280197, guid: 6905212044b45e241980026cfca3626d, type: 3}
   hitBox: {fileID: 5007634709246874717}
   hurtBox: {fileID: 2724879886868966089}
   legHurtBox: {fileID: 8641446266141668406}

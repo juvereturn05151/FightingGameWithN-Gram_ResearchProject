@@ -855,7 +855,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2371029347350406274, guid: 2297467dc93fe8d43a62b77d7d3ebd0b, type: 3}
       propertyPath: isAI
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2371029347350406274, guid: 2297467dc93fe8d43a62b77d7d3ebd0b, type: 3}
       propertyPath: moveAction
@@ -869,6 +869,10 @@ PrefabInstance:
       propertyPath: blockAction
       value: 
       objectReference: {fileID: 4490448087813914276, guid: 27380f988e82a4f4f939f1ec490f3acf, type: 3}
+    - target: {fileID: 2371029347350406274, guid: 2297467dc93fe8d43a62b77d7d3ebd0b, type: 3}
+      propertyPath: throwAction
+      value: 
+      objectReference: {fileID: 8756717316155245675, guid: 27380f988e82a4f4f939f1ec490f3acf, type: 3}
     - target: {fileID: 2371029347350406274, guid: 2297467dc93fe8d43a62b77d7d3ebd0b, type: 3}
       propertyPath: attackAction
       value: 
