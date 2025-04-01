@@ -72,6 +72,7 @@ public class Character : MonoBehaviour
     private readonly int hurtHash = Animator.StringToHash("Hurt");
     private readonly int blockHash = Animator.StringToHash("Block");
     private readonly string blockAnimation = "Block_Animation";
+    private readonly string whiffThrowAnimation = "WhiffThrow_Animation";
     private readonly int throwHash = Animator.StringToHash("Throw");
     private readonly int youWinHash = Animator.StringToHash("YouWin");
     private readonly int youLoseHash = Animator.StringToHash("YouLose");
@@ -126,6 +127,11 @@ public class Character : MonoBehaviour
         if (isHurt)
         {
             HandleHurtState();
+            return;
+        }
+
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName(whiffThrowAnimation))
+        {
             return;
         }
 
