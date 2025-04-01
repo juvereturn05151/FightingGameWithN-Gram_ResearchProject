@@ -1,8 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections.Generic;
 
-public class Character : MonoBehaviour
+public class AI : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField] private int playerSide;
@@ -69,19 +68,7 @@ public class Character : MonoBehaviour
     public event System.Action<int, int> OnHealthChanged;
     public Animator Animator => animator;
 
-    public enum Actiontype
-    {
-        Attacking = 0,
-        Blocking = 1,
-        Grabbing = 2
-    }
-
-    public const int ACTION_LOG_SIZE = 30;
-    public Queue<Actiontype> actionLog = new Queue<Actiontype>();
-
-
-
-private void Start()
+    private void Start()
     {
         opponent = playerSide == 0 ? GameManager.Instance.character2 : GameManager.Instance.character1;
         originalPosition = this.transform.position;
@@ -341,7 +328,6 @@ private void Start()
 
     public void Attack()
     {
-        QueueAction(Actiontype.Attacking);
         isAttacking = true;
         hitBox.enabled = true;
         audioSource.PlayOneShot(attackSound);
@@ -434,15 +420,4 @@ private void Start()
             GameManager.Instance.ChangeState(GameState.RoundEnd);
         }
     }
-
-    private void QueueAction(Actiontype t)
-    {
-        actionLog.Enqueue(t);
-            //Maintain an action log of a set size.
-        if(actionLog.Count > ACTION_LOG_SIZE)
-        {
-            actionLog.Dequeue();
-        }
-    }
 }
-
