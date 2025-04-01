@@ -19,6 +19,7 @@ public class Character : MonoBehaviour
     [Header("References")]
     [SerializeField] private InputActionReference moveAction;
     [SerializeField] private InputActionReference attackAction;
+    [SerializeField] private InputActionReference blockAction;
 
     [SerializeField] private Collider2D hitBox;
     [SerializeField] private Collider2D hurtBox;
@@ -47,6 +48,7 @@ public class Character : MonoBehaviour
     private bool isThrowing;
     private bool beingThrown;
     private bool hasSetOriginalPos;
+    private bool holdBlock;
     private int currentHealth;
     private float distanceFromOpponent;
 
@@ -83,8 +85,11 @@ public class Character : MonoBehaviour
 
         //Debug.Log("distanceFromOpponent: " + distanceFromOpponent);
 
-        block = false;
-        animator.SetBool(blockHash, false);
+        if (!holdBlock)
+        {
+            block = false;
+            animator.SetBool(blockHash, false);
+        }
 
         if (youLose)
         {
@@ -127,6 +132,8 @@ public class Character : MonoBehaviour
             HandleMovement();
         }
 
+        HandleGuard();
+
         if (isBlocking)
         {
             HandleIsBlocking();
@@ -143,7 +150,7 @@ public class Character : MonoBehaviour
     private void HandleIsBlocking() 
     {
         animator.SetBool(blockHash, true);
-        hitBox.enabled = false;
+        //hitBox.enabled = false;
         isBlocking = false;
     }
 
@@ -288,7 +295,24 @@ public class Character : MonoBehaviour
         {
             animator.SetBool(walkFrontHash, false);
             animator.SetBool(walkBackHash, false);
-            block = false;
+            if (!holdBlock)
+            {
+                block = false;
+            }
+
+        }
+    }
+
+    private void HandleGuard() 
+    {
+        if (blockAction.action.IsPressed())
+        {
+            holdBlock = true;
+            HandleIsBlocking();
+        }
+        else 
+        {
+            holdBlock = false;
         }
     }
 
@@ -305,12 +329,18 @@ public class Character : MonoBehaviour
     {
         if (block)
         {
-            if (!isBlocking)
+            if (!isBlocking )
             {
                 isBlocking = true;
                 audioSource.PlayOneShot(guardSound);
             }
 
+            return;
+        }
+
+        if (holdBlock)
+        {
+            audioSource.PlayOneShot(guardSound);
             return;
         }
 
