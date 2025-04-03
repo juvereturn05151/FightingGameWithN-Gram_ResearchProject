@@ -344,6 +344,7 @@ private void Start()
         bool throwPressed = isAI ? aiThrowDecision : throwAction.action.WasPressedThisFrame();
         if (throwPressed)
         {
+            QueueAction(Actiontype.Grabbing);
             if (IsOpponentWithinThrowRange())
             {
                 ExecuteThrow();
@@ -358,22 +359,22 @@ private void Start()
         }
 
         // Original movement-based throw system
-        if (IsOpponentWithinThrowRange())
-        {
-            bool attackPressed = isAI ? aiAttackDecision : attackAction.action.WasPressedThisFrame();
-            if (attackPressed)
-            {
-                Vector2 moveInput = isAI ? aiMoveInput : moveAction.action.ReadValue<Vector2>();
-                bool movingTowardOpponent = (playerSide == 0 && moveInput.x > 0) ||
-                                          (playerSide == 1 && moveInput.x < 0);
+        //if (IsOpponentWithinThrowRange())
+        //{
+        //    bool attackPressed = isAI ? aiAttackDecision : attackAction.action.WasPressedThisFrame();
+        //    if (attackPressed)
+        //    {
+        //        Vector2 moveInput = isAI ? aiMoveInput : moveAction.action.ReadValue<Vector2>();
+        //        bool movingTowardOpponent = (playerSide == 0 && moveInput.x > 0) ||
+        //                                  (playerSide == 1 && moveInput.x < 0);
 
-                if (movingTowardOpponent)
-                {
-                    ExecuteThrow();
-                    return;
-                }
-            }
-        }
+        //        if (movingTowardOpponent)
+        //        {
+        //            ExecuteThrow();
+        //            return;
+        //        }
+        //    }
+        //}
 
         // Regular attack
         bool attackInput = isAI ? aiAttackDecision : attackAction.action.WasPressedThisFrame();
@@ -432,8 +433,11 @@ private void Start()
         bool blockInput = isAI ? aiBlockDecision : blockAction.action.IsPressed();
         if (blockInput)
         {
+            if (!holdBlock)
+            {
+                QueueAction(Actiontype.Blocking);
+            }
             holdBlock = true;
-            QueueAction(Actiontype.Blocking);
             HandleIsBlocking();
         }
         else
@@ -444,7 +448,7 @@ private void Start()
 
     private void ExecuteThrow()
     {
-        QueueAction(Actiontype.Grabbing);
+        
 
         isThrowing = true;
         float xOffset = playerSide == 0 ? 1.75f : -1.75f;
