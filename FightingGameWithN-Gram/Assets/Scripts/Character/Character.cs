@@ -2,6 +2,13 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 
+public enum Actiontype
+{
+    Attacking = 0,
+    Blocking = 1,
+    Grabbing = 2
+}
+
 public class Character : MonoBehaviour
 {
     [Header("Settings")]
@@ -85,12 +92,9 @@ public class Character : MonoBehaviour
     public event System.Action<int, int> OnHealthChanged;
     public Animator Animator => animator;
 
-    public enum Actiontype
-    {
-        Attacking = 0,
-        Blocking = 1,
-        Grabbing = 2
-    }
+
+
+    
 
     public const int ACTION_LOG_SIZE = 30;
     public Queue<Actiontype> actionLog = new Queue<Actiontype>();
@@ -429,6 +433,7 @@ private void Start()
         if (blockInput)
         {
             holdBlock = true;
+            QueueAction(Actiontype.Blocking);
             HandleIsBlocking();
         }
         else
@@ -439,6 +444,8 @@ private void Start()
 
     private void ExecuteThrow()
     {
+        QueueAction(Actiontype.Grabbing);
+
         isThrowing = true;
         float xOffset = playerSide == 0 ? 1.75f : -1.75f;
 
