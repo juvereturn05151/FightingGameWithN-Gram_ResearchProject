@@ -11,4 +11,6 @@ public class AnimatorStateEvent : MonoBehaviour
     public void OnThrowFinished() => character.OnThrowFinished();
 
     public void OnYouLoseFinished() => character.OnYouLoseFinished();
+
+    public void OnWhiffThrowFinished() => character.OnWhiffThrowFinished();
 }

@@ -6,11 +6,17 @@ public class Character : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField] private int playerSide;
-    [Range(1,3)]
+    [Range(1, 3)]
     [SerializeField] private int maxHealth;
     [SerializeField] private float movementSpeed = 5f;
     [SerializeField] private float throwRange = 1.9f;
     [SerializeField] private float throwForce = 200000f;
+
+    [Header("AI Settings")]
+    [SerializeField] private bool isAI = false;
+    [SerializeField] private float aiDecisionInterval = 0.5f;
+    [SerializeField] private float aiAggressiveness = 0.5f; // 0-1 range
+    [SerializeField] private float aiThrowProbability = 0.3f; // Chance AI will use throw button
 
     [Header("Components")]
     [SerializeField] private Animator animator;
@@ -20,6 +26,8 @@ public class Character : MonoBehaviour
     [Header("References")]
     [SerializeField] private InputActionReference moveAction;
     [SerializeField] private InputActionReference attackAction;
+    [SerializeField] private InputActionReference blockAction;
+    [SerializeField] private InputActionReference throwAction;
 
     [SerializeField] private Collider2D hitBox;
     [SerializeField] private Collider2D hurtBox;
@@ -32,9 +40,15 @@ public class Character : MonoBehaviour
     [SerializeField] private AudioClip hitConfirmSound;
     [SerializeField] private AudioClip youWinSound;
     [SerializeField] private AudioClip hurtSound;
-
+    [SerializeField] private AudioClip throwSound;
+    [SerializeField] private AudioClip whiffThrowSound;
 
     private Character opponent;
+    private float aiTimer = 0f;
+    private Vector2 aiMoveInput;
+    private bool aiAttackDecision;
+    private bool aiBlockDecision;
+    private bool aiThrowDecision;
 
     private bool isAttacking;
     private bool isHurt;
@@ -48,6 +62,7 @@ public class Character : MonoBehaviour
     private bool isThrowing;
     private bool beingThrown;
     private bool hasSetOriginalPos;
+    private bool holdBlock;
     private int currentHealth;
     private float distanceFromOpponent;
 
@@ -58,13 +73,14 @@ public class Character : MonoBehaviour
     private readonly int hurtHash = Animator.StringToHash("Hurt");
     private readonly int blockHash = Animator.StringToHash("Block");
     private readonly string blockAnimation = "Block_Animation";
+    private readonly string whiffThrowAnimation = "WhiffThrow_Animation";
     private readonly int throwHash = Animator.StringToHash("Throw");
     private readonly int youWinHash = Animator.StringToHash("YouWin");
     private readonly int youLoseHash = Animator.StringToHash("YouLose");
     private readonly int hitConfirmHash = Animator.StringToHash("HitConfirm");
+    private readonly int whiffThrowHash = Animator.StringToHash("WhiffThrow");
 
     private Vector3 originalPosition;
-
 
     public event System.Action<int, int> OnHealthChanged;
     public Animator Animator => animator;
@@ -94,10 +110,22 @@ private void Start()
     {
         if (!isReadyToFight) return;
 
-        //Debug.Log("distanceFromOpponent: " + distanceFromOpponent);
+        // AI decision making
+        if (isAI)
+        {
+            aiTimer += Time.deltaTime;
+            if (aiTimer >= aiDecisionInterval)
+            {
+                MakeAIDecision();
+                aiTimer = 0f;
+            }
+        }
 
-        block = false;
-        animator.SetBool(blockHash, false);
+        if (!holdBlock)
+        {
+            block = false;
+            animator.SetBool(blockHash, false);
+        }
 
         if (youLose)
         {
@@ -115,13 +143,18 @@ private void Start()
             return;
         }
 
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName(whiffThrowAnimation))
+        {
+            return;
+        }
+
         if (hitConfirmSuccess)
         {
             HandleHitConfirmSuccess();
             return;
         }
 
-        if (isAbleToHitConfirm) 
+        if (isAbleToHitConfirm)
         {
             HandleIsAbleToHitConfirmState();
             return;
@@ -135,10 +168,12 @@ private void Start()
 
         HandleAttackState();
 
-        if (!isAttacking && !animator.GetCurrentAnimatorStateInfo(0).IsName(blockAnimation)) 
+        if (!isAttacking && !animator.GetCurrentAnimatorStateInfo(0).IsName(blockAnimation))
         {
             HandleMovement();
         }
+
+        HandleGuard();
 
         if (isBlocking)
         {
@@ -147,35 +182,97 @@ private void Start()
         }
     }
 
+    private void MakeAIDecision()
+    {
+        distanceFromOpponent = Vector2.Distance(transform.position, opponent.transform.position);
+
+        // Reset AI decisions
+        aiMoveInput = Vector2.zero;
+        aiAttackDecision = false;
+        aiBlockDecision = false;
+        aiThrowDecision = false;
+
+        if (opponent.IsAttacking && distanceFromOpponent < 2f)
+        {
+            // Block if opponent is attacking and close
+            aiBlockDecision = Random.value < 0.7f;
+        }
+        else if (distanceFromOpponent < throwRange * 1.2f)
+        {
+            // Close range behavior
+            if (Random.value < aiAggressiveness)
+            {
+                // Decide between regular attack or throw
+                if (Random.value < aiThrowProbability)
+                {
+                    // Use throw button
+                    aiThrowDecision = true;
+                }
+                else
+                {
+                    // Use regular attack or movement throw
+                    aiAttackDecision = true;
+                    aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? 1 : -1, 0);
+                }
+            }
+            else
+            {
+                // Retreat
+                aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? -1 : 1, 0);
+            }
+        }
+        else
+        {
+            // Mid/far range behavior
+            if (Random.value < aiAggressiveness * 0.7f)
+            {
+                // Approach
+                aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? 1 : -1, 0);
+            }
+            else
+            {
+                // Hold position or move back slightly
+                aiMoveInput = Random.value < 0.3f ? Vector2.zero :
+                    new Vector2(opponent.transform.position.x > transform.position.x ? -0.5f : 0.5f, 0);
+            }
+        }
+    }
+
+    public void SetAIInput(Vector2 moveInput, bool attack, bool block, bool throwInput)
+    {
+        aiMoveInput = moveInput;
+        aiAttackDecision = attack;
+        aiBlockDecision = block;
+        aiThrowDecision = throwInput;
+    }
+
     public void Init()
     {
         currentHealth = maxHealth;
         OnHealthChanged?.Invoke(playerSide, currentHealth);
     }
 
-    private void HandleIsBlocking() 
+    private void HandleIsBlocking()
     {
         animator.SetBool(blockHash, true);
-        hitBox.enabled = false;
         isBlocking = false;
     }
 
     private void HandleLoseState()
     {
         animator.SetBool(youLoseHash, true);
-
         audioSource.PlayOneShot(hurtSound);
 
-        // Apply lose force
         float forceDirection = playerSide == 0 ? -throwForce : throwForce;
         rb.AddForce(new Vector2(forceDirection, throwForce), ForceMode2D.Impulse);
     }
 
-    private void HandleIsAbleToHitConfirmState() 
+    private void HandleIsAbleToHitConfirmState()
     {
         if (!hitConfirmSuccess)
         {
-            if (attackAction.action.WasPressedThisFrame())
+            bool attackPressed = isAI ? aiAttackDecision : attackAction.action.WasPressedThisFrame();
+            if (attackPressed)
             {
                 animator.SetTrigger(hitConfirmHash);
                 hitConfirmSuccess = true;
@@ -192,7 +289,7 @@ private void Start()
         }
     }
 
-    public void OnHitConfirmSuccessFinished() 
+    public void OnHitConfirmSuccessFinished()
     {
         if (!youWin)
         {
@@ -200,7 +297,6 @@ private void Start()
             audioSource.PlayOneShot(youWinSound);
             animator.SetBool(youWinHash, true);
             opponent.SetYouLose(true);
-
         }
     }
 
@@ -229,7 +325,7 @@ private void Start()
 
     private void HandleThrowState()
     {
-        animator.SetBool(throwHash,true);
+        animator.SetBool(throwHash, true);
     }
 
     private void HandleAttackState()
@@ -240,12 +336,32 @@ private void Start()
             return;
         }
 
+        // Check for throw button input (new system)
+        bool throwPressed = isAI ? aiThrowDecision : throwAction.action.WasPressedThisFrame();
+        if (throwPressed)
+        {
+            if (IsOpponentWithinThrowRange())
+            {
+                ExecuteThrow();
+            }
+            else
+            {
+                // Whiff throw (missed throw)
+                animator.SetTrigger(whiffThrowHash);
+                audioSource.PlayOneShot(whiffThrowSound);
+            }
+            return;
+        }
+
+        // Original movement-based throw system
         if (IsOpponentWithinThrowRange())
         {
-            if (attackAction.action.WasPressedThisFrame())
+            bool attackPressed = isAI ? aiAttackDecision : attackAction.action.WasPressedThisFrame();
+            if (attackPressed)
             {
-                bool movingTowardOpponent = (playerSide == 0 && moveAction.action.ReadValue<Vector2>().x > 0) ||
-                                          (playerSide == 1 && moveAction.action.ReadValue<Vector2>().x < 0);
+                Vector2 moveInput = isAI ? aiMoveInput : moveAction.action.ReadValue<Vector2>();
+                bool movingTowardOpponent = (playerSide == 0 && moveInput.x > 0) ||
+                                          (playerSide == 1 && moveInput.x < 0);
 
                 if (movingTowardOpponent)
                 {
@@ -255,28 +371,28 @@ private void Start()
             }
         }
 
-        if (attackAction.action.WasPressedThisFrame())
+        // Regular attack
+        bool attackInput = isAI ? aiAttackDecision : attackAction.action.WasPressedThisFrame();
+        if (attackInput)
         {
             Attack();
             return;
         }
     }
 
-    public void OnAttackFinished() 
+    public void OnAttackFinished()
     {
         isAttacking = false;
         animator.SetBool(attackHash, false);
+        if (isAI) aiAttackDecision = false;
     }
 
     private void HandleMovement()
     {
-        Vector2 moveInput = moveAction.action.ReadValue<Vector2>();
-
+        Vector2 moveInput = isAI ? aiMoveInput : moveAction.action.ReadValue<Vector2>();
         Vector2 movement = new Vector2(moveInput.x * movementSpeed * Time.deltaTime, 0);
-
         transform.Translate(movement);
 
-        // Update animations based on movement
         if (Mathf.Abs(moveInput.x) > 0.1f)
         {
             bool movingRight = moveInput.x > 0;
@@ -285,12 +401,11 @@ private void Start()
             {
                 animator.SetBool(movingRight ? walkFrontHash : walkBackHash, true);
             }
-            else 
+            else
             {
                 animator.SetBool(movingRight ? walkBackHash : walkFrontHash, true);
             }
 
-            // Check for blocking
             if ((playerSide == 0 && !movingRight) || (playerSide == 1 && movingRight))
             {
                 block = true;
@@ -301,7 +416,24 @@ private void Start()
         {
             animator.SetBool(walkFrontHash, false);
             animator.SetBool(walkBackHash, false);
-            block = false;
+            if (!holdBlock)
+            {
+                block = false;
+            }
+        }
+    }
+
+    private void HandleGuard()
+    {
+        bool blockInput = isAI ? aiBlockDecision : blockAction.action.IsPressed();
+        if (blockInput)
+        {
+            holdBlock = true;
+            HandleIsBlocking();
+        }
+        else
+        {
+            holdBlock = false;
         }
     }
 
@@ -312,6 +444,13 @@ private void Start()
 
         opponent.transform.position = transform.position + new Vector3(xOffset, 2f, 0);
         opponent.SetBeingThrown(true);
+        audioSource.PlayOneShot(throwSound);
+
+        if (isAI)
+        {
+            aiAttackDecision = false;
+            aiThrowDecision = false;
+        }
     }
 
     public void TriggerHurt()
@@ -323,7 +462,12 @@ private void Start()
                 isBlocking = true;
                 audioSource.PlayOneShot(guardSound);
             }
+            return;
+        }
 
+        if (holdBlock)
+        {
+            audioSource.PlayOneShot(guardSound);
             return;
         }
 
@@ -345,6 +489,7 @@ private void Start()
         isAttacking = true;
         hitBox.enabled = true;
         audioSource.PlayOneShot(attackSound);
+        if (isAI) aiAttackDecision = false;
     }
 
     public void ResetState()
@@ -371,20 +516,25 @@ private void Start()
         animator.SetBool(youLoseHash, false);
         animator.SetBool(hitConfirmHash, false);
 
-        if (hasSetOriginalPos) 
+        if (hasSetOriginalPos)
         {
             this.transform.position = originalPosition;
         }
 
         rb.velocity = Vector2.zero;
+
+        if (isAI)
+        {
+            aiMoveInput = Vector2.zero;
+            aiAttackDecision = false;
+            aiBlockDecision = false;
+            aiThrowDecision = false;
+        }
     }
-
-
 
     private bool IsOpponentWithinThrowRange()
     {
         if (opponent == null) return false;
-
         distanceFromOpponent = Vector2.Distance(transform.position, opponent.transform.position);
         return distanceFromOpponent < throwRange;
     }
@@ -392,44 +542,47 @@ private void Start()
     // Public properties and methods
     public int PlayerSide => playerSide;
     public bool IsHurt => isHurt;
+    public bool IsAttacking => isAttacking;
     public bool CanHitConfirm => isAbleToHitConfirm;
     public bool YouWin => youWin;
     public bool YouLose => youLose;
     public bool IsReadyToFight => isReadyToFight;
     public bool IsThrowing => isThrowing;
     public bool BeingThrown => beingThrown;
+    public Character Opponent => opponent;
+    public float DistanceFromOpponent => distanceFromOpponent;
+    public bool IsAI => isAI;
 
     public void SetCanHitConfirm(bool canHit) => isAbleToHitConfirm = canHit;
-    public void SetYouLose(bool lose) 
+    public void SetYouLose(bool lose)
     {
+        animator.SetBool(walkBackHash, false);
+        animator.SetBool(walkFrontHash, false);
+        animator.SetBool(attackHash, false);
+        animator.SetBool(hurtHash, false);
+        animator.SetBool(blockHash, false);
+        animator.SetBool(throwHash, false);
+        animator.SetBool(youWinHash, false);
+        animator.SetBool(hitConfirmHash, false);
+
         currentHealth -= 1;
-
         OnHealthChanged?.Invoke(playerSide, currentHealth);
-
         youLose = lose;
-
-        if (youLose) 
-        {
-            HandleLoseState();
-        }
+        if (youLose) HandleLoseState();
     }
     public void SetIsReadyToFight(bool ready) => isReadyToFight = ready;
     public void SetOpponent(Character opp) => opponent = opp;
     public void SetBeingThrown(bool thrown) => beingThrown = thrown;
+    public void SetIsReadyToPlay(bool isReady) => isReadyToFight = isReady;
 
-    public void SetIsReadyToPlay(bool isReady) 
-    {
-        isReadyToFight = isReady;
-    }
-
-    public void OnYouLoseFinished() 
+    public void OnYouLoseFinished()
     {
         if (currentHealth <= 0)
         {
             UIManager.Instance.UpdateWinnerText(opponent.PlayerSide);
             GameManager.Instance.ChangeState(GameState.MatchEnd);
         }
-        else 
+        else
         {
             GameManager.Instance.ChangeState(GameState.RoundEnd);
         }
@@ -444,5 +597,9 @@ private void Start()
             actionLog.Dequeue();
         }
     }
-}
 
+    public void OnWhiffThrowFinished() 
+    {
+        animator.SetBool(whiffThrowHash, false);
+    }
+}

@@ -700,7 +700,7 @@ TextureImporter:
       name: Ryu2_19
       rect:
         serializedVersion: 2
-        x: 353
+        x: 348
         y: 688
         width: 174
         height: 98
@@ -722,7 +722,7 @@ TextureImporter:
       name: Ryu2_20
       rect:
         serializedVersion: 2
-        x: 527
+        x: 522
         y: 688
         width: 174
         height: 98
@@ -744,7 +744,7 @@ TextureImporter:
       name: Ryu2_21
       rect:
         serializedVersion: 2
-        x: 703
+        x: 696
         y: 688
         width: 174
         height: 98
@@ -766,7 +766,7 @@ TextureImporter:
       name: Ryu2_22
       rect:
         serializedVersion: 2
-        x: 879
+        x: 870
         y: 688
         width: 174
         height: 98
@@ -1422,6 +1422,72 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Ryu2_23
+      rect:
+        serializedVersion: 2
+        x: 1219
+        y: 687
+        width: 174
+        height: 98
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3794b282e9695184a9e9a1a4b751eea1
+      internalID: 7452412290462597879
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ryu2_27
+      rect:
+        serializedVersion: 2
+        x: 870
+        y: 590
+        width: 174
+        height: 98
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cc57964def0e18146ada5978ba7e0258
+      internalID: -2467351103922866527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ryu2_54
+      rect:
+        serializedVersion: 2
+        x: 174
+        y: 100
+        width: 174
+        height: 98
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0229678614e77514cbfd4f04e5cb0815
+      internalID: 706350019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -1484,6 +1550,7 @@ TextureImporter:
       Ryu2_51: -8903470264637699036
       Ryu2_52: 792518088
       Ryu2_53: -1650532810
+      Ryu2_54: 706350019
       Ryu2_6: 4376645789502261408
       Ryu2_7: 8568940476059868159
       Ryu2_8: -7004856418766968057
