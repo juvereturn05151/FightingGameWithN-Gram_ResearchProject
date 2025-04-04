@@ -198,8 +198,15 @@ private void Start()
 
         if (opponent.IsAttacking && distanceFromOpponent < 2f)
         {
-            // Block if opponent is attacking and close
-            aiBlockDecision = Random.value < 0.7f;
+            // Either block or counter-attack
+            if (Random.value < 0.7f)
+            {
+                aiBlockDecision = true;
+            }
+            else if (Random.value < 0.5f)
+            {
+                aiAttackDecision = true;
+            }
         }
         else if (distanceFromOpponent < throwRange * 1.2f)
         {
@@ -448,7 +455,14 @@ private void Start()
 
     private void ExecuteThrow()
     {
-        
+        // Check if opponent is attacking - if so, the throw should fail
+        if (opponent.IsAttacking)
+        {
+            // Whiff throw (attack beats throw)
+            animator.SetTrigger(whiffThrowHash);
+            audioSource.PlayOneShot(whiffThrowSound);
+            return;
+        }
 
         isThrowing = true;
         float xOffset = playerSide == 0 ? 1.75f : -1.75f;
@@ -496,6 +510,12 @@ private void Start()
 
     public void Attack()
     {
+        // If opponent is attempting to throw, this attack should beat it
+        if (opponent.IsThrowing)
+        {
+            opponent.OnWhiffThrowFinished(); // Cancel opponent's throw attempt
+        }
+
         QueueAction(Actiontype.Attacking);
         isAttacking = true;
         hitBox.enabled = true;
@@ -612,5 +632,12 @@ private void Start()
     public void OnWhiffThrowFinished() 
     {
         animator.SetBool(whiffThrowHash, false);
+    }
+
+    private bool AttackBeatsThrow(Character attacker, Character thrower)
+    {
+        // Attack beats throw if the attacker is currently in an attack animation
+        // and the thrower is attempting to throw at the same time
+        return attacker.IsAttacking && thrower.IsThrowing;
     }
 }
