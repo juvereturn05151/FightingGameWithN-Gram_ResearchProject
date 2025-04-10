@@ -120,3 +120,53 @@ Would you like help integrating enums with UI elements or player actions? Let me
 --------------------------------------------------------------
 
 
+C# array
+===
+
+In C#, an array is a data structure that allows you to store multiple values of the same type in a contiguous block of memory. You can define an array using square brackets `[]`, and you can initialize it with values or specify its size.
+
+### Declaring and Initializing an Array:
+```csharp
+// Declaring an array without initializing
+int[] numbers;
+
+// Initializing with predefined values
+int[] predefinedNumbers = { 1, 2, 3, 4, 5 };
+
+// Initializing with a specific size
+int[] sizedNumbers = new int[5]; // Array of size 5
+```
+
+### Accessing and Modifying Array Elements:
+```csharp
+// Accessing an element
+Console.WriteLine(predefinedNumbers[2]); // Output: 3
+
+// Modifying an element
+predefinedNumbers[2] = 10;
+Console.WriteLine(predefinedNumbers[2]); // Output: 10
+```
+
+### Iterating Through an Array:
+```csharp
+foreach (int num in predefinedNumbers)
+{
+    Console.WriteLine(num); // Prints all elements
+}
+```
+
+### Multi-Dimensional Arrays:
+```csharp
+int[,] matrix = { {1, 2, 3}, {4, 5, 6} }; // 2D array
+
+Console.WriteLine(matrix[1, 2]); // Output: 6
+```
+
+### Useful Properties and Methods:
+- `Length` → Gets the number of elements in the array.
+- `Array.Sort()` → Sorts an array.
+- `Array.Reverse()` → Reverses an array.
+
+Let me know if you need more details or examples!
+
+
