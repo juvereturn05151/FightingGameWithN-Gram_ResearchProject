@@ -5,9 +5,9 @@ public class ActionChance
 {
     public ActionChance()
     {
-        this.A = 1;
-        this.B = 1;
-        this.G = 1;
+        this.A = 0;
+        this.B = 0;
+        this.G = 0;
     }
 
     public ActionChance(float a, float b, float g)
@@ -20,17 +20,53 @@ public class ActionChance
     public float A = 0.33f;
     public float B = 0.33f;
     public float G = 0.33f;
+
+    public void Normalize()    //Assumes values not added
+    {
+        float total = A + B + G;
+        if (total == 0) return;
+        A = A/total;
+        B = B/total;
+        G = G/total;
+        total = 1;
+    }
 }
 
 public class N_Gram : MonoBehaviour
 {
     ActionChance calculateNextPick(Queue<Actiontype> actionlog)
     {
-        
-        for(int i = 0; i<actionlog.Count; i++){
-            
-        }
         ActionChance chances = new ActionChance();
+        if (actionlog.Count == 0) { return chances; }
+        ActionChance[] ActionCount = new ActionChance[]
+        {
+            new ActionChance(), //Attacking
+            new ActionChance(), //Blocking
+            new ActionChance()  //Grabbing
+        };
+
+        Actiontype[] index = actionlog.ToArray();
+        for (int i = 0; i < actionlog.Count - 1; i++) {
+            int type = (int)index[i];
+            int nextType = (int)index[i + 1];
+            switch (nextType) {
+                case(0):
+                    ActionCount[type].A += 1;
+                    break;
+                case(1):
+                    ActionCount[type].B += 1;
+                    break;
+                case(2):
+                    ActionCount[type].G += 1;
+                    break;
+            }
+        }
+        //ActionChance chances = new ActionChance();
+
+        int relevant_chances = (int)index[actionlog.Count - 1];
+        chances = ActionCount[relevant_chances];
+        chances.Normalize();
+
         return chances;
     }
 

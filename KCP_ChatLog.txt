@@ -168,5 +168,194 @@ Console.WriteLine(matrix[1, 2]); // Output: 6
 - `Array.Reverse()` → Reverses an array.
 
 Let me know if you need more details or examples!
+--------------------------------------------------------------
+
+Can you show me an example with a custom class
+
+===
+
+Absolutely! Here's an example of how you can use a custom class with an array in C#. In this example, we'll create a `Person` class, store multiple `Person` objects in an array, and then iterate through them.
+
+### Example:
+```csharp
+using System;
+
+class Person
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+
+    // Constructor
+    public Person(string name, int age)
+    {
+        Name = name;
+        Age = age;
+    }
+
+    // Method to display information
+    public void DisplayInfo()
+    {
+        Console.WriteLine($"Name: {Name}, Age: {Age}");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        // Creating an array of Person objects
+        Person[] people = new Person[]
+        {
+            new Person("Alice", 25),
+            new Person("Bob", 30),
+            new Person("Charlie", 22)
+        };
+
+        // Iterating through the array and displaying information
+        foreach (Person person in people)
+        {
+            person.DisplayInfo();
+        }
+    }
+}
+```
+
+### Explanation:
+1. The `Person` class has properties for `Name` and `Age`, along with a constructor and a method to display the person's information.
+2. We create an array `people` that holds multiple `Person` objects.
+3. Using a `foreach` loop, we iterate through the array and call `DisplayInfo()` on each object.
+
+When you run this, it will output:
+```
+Name: Alice, Age: 25
+Name: Bob, Age: 30
+Name: Charlie, Age: 22
+```
+Let me know if you need modifications or enhancements! 🚀
+------------------------------------------------------------------
+
+How do I See the next value in a for each loop of a queue.
+
+===
+
+In a `foreach` loop, you don't have direct access to the "next" item in a queue since the loop iterates one element at a time. However, if you need to see the next value while iterating, you can use a `Queue<T>` with a standard `for` loop or maintain a previous reference.
+
+### Solution 1: Using a `for` Loop Instead
+A `for` loop lets you access the next element using indexing.
+```csharp
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        Queue<int> numbers = new Queue<int>(new[] { 10, 20, 30, 40, 50 });
+        int[] arr = numbers.ToArray(); // Convert to array for indexed access
+
+        for (int i = 0; i < arr.Length; i++)
+        {
+            Console.WriteLine($"Current: {arr[i]}");
+            if (i < arr.Length - 1)
+            {
+                Console.WriteLine($"Next: {arr[i + 1]}");
+            }
+            else
+            {
+                Console.WriteLine("Next: None (Last Element)");
+            }
+        }
+    }
+}
+```
+
+### Solution 2: Using an Enumerator
+You can use an `IEnumerator` to peek at the next value while iterating.
+```csharp
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        Queue<int> numbers = new Queue<int>(new[] { 10, 20, 30, 40, 50 });
+        IEnumerator<int> enumerator = numbers.GetEnumerator();
+
+        int? previous = null;
+        while (enumerator.MoveNext())
+        {
+            Console.WriteLine($"Current: {enumerator.Current}");
+            if (previous.HasValue)
+            {
+                Console.WriteLine($"Previous: {previous}");
+            }
+
+            previous = enumerator.Current; // Store current as previous for next iteration
+        }
+    }
+}
+```
+
+### Solution 3: Iterating with a Temporary Queue
+Another approach is to clone the queue and remove elements while checking the next item.
+```csharp
+Queue<int> tempQueue = new Queue<int>(numbers);
+while (tempQueue.Count > 0)
+{
+    int current = tempQueue.Dequeue();
+    Console.WriteLine($"Current: {current}");
+    Console.WriteLine($"Next: {(tempQueue.Count > 0 ? tempQueue.Peek().ToString() : "None (Last Element)")}");
+}
+```
+
+Would you like more details or alternative solutions? 🚀
+
+-------------------------------------------------------------------
+
+How to convert enum to int automatically
+===
+
+In C#, an `enum` can be implicitly converted to an `int` without any special methods. Since an `enum` is essentially backed by integer values, you can assign it directly to an `int` variable.
+
+### Example:
+```csharp
+using System;
+
+enum Status
+{
+    Pending = 1,
+    Approved = 2,
+    Rejected = 3
+}
+
+class Program
+{
+    static void Main()
+    {
+        Status currentStatus = Status.Approved;
+
+        // Implicitly convert enum to int
+        int statusValue = (int)currentStatus;
+
+        Console.WriteLine($"Enum: {currentStatus}");
+        Console.WriteLine($"Converted Integer Value: {statusValue}");
+    }
+}
+```
+
+### Explanation:
+- Enums are internally represented as integers.
+- You can cast an enum to `int` using `(int)myEnumValue` to obtain its underlying numeric value.
+
+If you need to store an enum value in an integer variable automatically (without explicitly casting), you could define the variable as an `int` from the start:
+```csharp
+int statusValue = Status.Approved; // Implicit conversion
+```
+
+Let me know if you need more details or variations! 🚀
+----------------------------------------------------------
+
+
 
 
