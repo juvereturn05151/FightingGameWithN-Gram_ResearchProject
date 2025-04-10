@@ -1,40 +1,11 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class ActionChance
-{
-    public ActionChance()
-    {
-        this.A = 0;
-        this.B = 0;
-        this.G = 0;
-    }
 
-    public ActionChance(float a, float b, float g)
-    {
-        this.A = a;
-        this.B = b;
-        this.G = g;
-    }
-    
-    public float A = 0.33f;
-    public float B = 0.33f;
-    public float G = 0.33f;
-
-    public void Normalize()    //Assumes values not added
-    {
-        float total = A + B + G;
-        if (total == 0) return;
-        A = A/total;
-        B = B/total;
-        G = G/total;
-        total = 1;
-    }
-}
 
 public class N_Gram : MonoBehaviour
 {
-    ActionChance calculateNextPick(Queue<Actiontype> actionlog)
+    public static ActionChance calculateNextPick(Queue<Actiontype> actionlog)
     {
         ActionChance chances = new ActionChance();
         if (actionlog.Count == 0) { return chances; }
@@ -71,7 +42,7 @@ public class N_Gram : MonoBehaviour
     }
 
         //Calculates a guess of what the next player input choice will be.
-    Actiontype calculateGuessedChoice(Queue<Actiontype> actionlog)
+    public static Actiontype calculateGuessedChoice(Queue<Actiontype> actionlog)
     {
         ActionChance odds = calculateNextPick(actionlog);
         float choice = Random.Range(0, 1);
@@ -87,9 +58,40 @@ public class N_Gram : MonoBehaviour
         {
             return Actiontype.Grabbing;
         }
-    } 
+    }
 }
 
+
+public class ActionChance
+{
+    public ActionChance()
+    {
+        this.A = 0;
+        this.B = 0;
+        this.G = 0;
+    }
+
+    public ActionChance(float a, float b, float g)
+    {
+        this.A = a;
+        this.B = b;
+        this.G = g;
+    }
+
+    public float A = 0.33f;
+    public float B = 0.33f;
+    public float G = 0.33f;
+
+    public void Normalize()    //Assumes values not added
+    {
+        float total = A + B + G;
+        if (total == 0) return;
+        A = A / total;
+        B = B / total;
+        G = G / total;
+        total = 1;
+    }
+}
 
 /// All N_GRAM logic
 /// 
