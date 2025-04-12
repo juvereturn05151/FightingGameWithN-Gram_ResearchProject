@@ -101,8 +101,9 @@ public class Character : MonoBehaviour
 
 
 
-private void Start()
+    private void Start()
     {
+
         opponent = playerSide == 0 ? GameManager.Instance.character2 : GameManager.Instance.character1;
         originalPosition = this.transform.position;
         hasSetOriginalPos = true;

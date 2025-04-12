@@ -155,11 +155,33 @@
                 },
                 {
                     "name": "",
+                    "id": "e5c01a0c-0743-45e0-bcc0-fbff06a38ca7",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard",
+                    "action": "Throw",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "5c56c26a-9b5c-4eb7-ab81-fdf3dbf7b352",
                     "path": "<Keyboard>/numpadPeriod",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
+                    "action": "Block",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "26e70491-89a2-476e-aedb-e001ea1957c7",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard",
                     "action": "Block",
                     "isComposite": false,
                     "isPartOfComposite": false
