@@ -106,37 +106,7 @@ public class Character : MonoBehaviour
 
     private void Start()
     {
-
         opponent = playerSide == 0 ? GameManager.Instance.character2 : GameManager.Instance.character1;
-
-        if (useGamePad) 
-        {
-            //if (playerSide == 0)
-            //{
-            //    if (InputSystem.GetDevice<Gamepad>() is Gamepad pad)
-            //    {
-            //        Debug.Log(pad.displayName);
-            //        if (pad.displayName == "XInputControllerWindows")
-            //        {
-            //            playerInput.SwitchCurrentControlScheme(pad);
-            //        }
-            //    }
-
-            //}
-            //else
-            //{
-            //    if (InputSystem.GetDevice<Gamepad>() is Gamepad pad)
-            //    {
-            //        Debug.Log(pad.displayName);
-            //        if (pad.displayName == "XInputControllerWindows1")
-            //        {
-            //            playerInput.SwitchCurrentControlScheme(pad);
-            //        }
-            //    }
-            //}
-        }
-
-
 
         originalPosition = this.transform.position;
         hasSetOriginalPos = true;
