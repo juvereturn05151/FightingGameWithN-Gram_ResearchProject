@@ -1096,7 +1096,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2371029347350406274, guid: 2297467dc93fe8d43a62b77d7d3ebd0b, type: 3}
       propertyPath: isAI
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2371029347350406274, guid: 2297467dc93fe8d43a62b77d7d3ebd0b, type: 3}
+      propertyPath: useJoyCon
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2371029347350406274, guid: 2297467dc93fe8d43a62b77d7d3ebd0b, type: 3}
       propertyPath: moveAction
@@ -1118,6 +1122,10 @@ PrefabInstance:
       propertyPath: attackAction
       value: 
       objectReference: {fileID: 5149656613758003984, guid: 27380f988e82a4f4f939f1ec490f3acf, type: 3}
+    - target: {fileID: 2371029347350406274, guid: 2297467dc93fe8d43a62b77d7d3ebd0b, type: 3}
+      propertyPath: useLeftJoyCon
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3565090984967372832, guid: 2297467dc93fe8d43a62b77d7d3ebd0b, type: 3}
       propertyPath: m_Name
       value: Player2Character
@@ -1125,6 +1133,10 @@ PrefabInstance:
     - target: {fileID: 5015764529345765313, guid: 2297467dc93fe8d43a62b77d7d3ebd0b, type: 3}
       propertyPath: m_LocalScale.x
       value: -3.078037
+      objectReference: {fileID: 0}
+    - target: {fileID: 5601527512104552165, guid: 2297467dc93fe8d43a62b77d7d3ebd0b, type: 3}
+      propertyPath: m_DefaultControlScheme
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1436,6 +1448,14 @@ PrefabInstance:
     - target: {fileID: 3417455596676149699, guid: bdb139526e25a254191758d1d7858f95, type: 3}
       propertyPath: m_Name
       value: Player1Character
+      objectReference: {fileID: 0}
+    - target: {fileID: 4535991513153803617, guid: bdb139526e25a254191758d1d7858f95, type: 3}
+      propertyPath: useJoyCon
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6028100015458694918, guid: bdb139526e25a254191758d1d7858f95, type: 3}
+      propertyPath: m_DefaultControlScheme
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
