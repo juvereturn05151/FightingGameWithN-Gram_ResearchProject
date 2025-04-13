@@ -232,6 +232,7 @@ MonoBehaviour:
   animator: {fileID: 7817402320201100624}
   rb: {fileID: 3000253748812480465}
   audioSource: {fileID: 3140071290391946033}
+  playerInput: {fileID: 6028100015458694918}
   moveAction: {fileID: 7609104885679577605, guid: 6905212044b45e241980026cfca3626d, type: 3}
   attackAction: {fileID: 5149656613758003984, guid: 6905212044b45e241980026cfca3626d, type: 3}
   blockAction: {fileID: -1486022434980959489, guid: 6905212044b45e241980026cfca3626d, type: 3}

@@ -31,6 +31,7 @@ public class Character : MonoBehaviour
     [SerializeField] private AudioSource audioSource;
 
     [Header("References")]
+    [SerializeField] private PlayerInput playerInput;
     [SerializeField] private InputActionReference moveAction;
     [SerializeField] private InputActionReference attackAction;
     [SerializeField] private InputActionReference blockAction;
@@ -49,6 +50,8 @@ public class Character : MonoBehaviour
     [SerializeField] private AudioClip hurtSound;
     [SerializeField] private AudioClip throwSound;
     [SerializeField] private AudioClip whiffThrowSound;
+
+    [SerializeField] bool useGamePad;
 
     private Character opponent;
     private float aiTimer = 0f;
@@ -105,6 +108,36 @@ public class Character : MonoBehaviour
     {
 
         opponent = playerSide == 0 ? GameManager.Instance.character2 : GameManager.Instance.character1;
+
+        if (useGamePad) 
+        {
+            //if (playerSide == 0)
+            //{
+            //    if (InputSystem.GetDevice<Gamepad>() is Gamepad pad)
+            //    {
+            //        Debug.Log(pad.displayName);
+            //        if (pad.displayName == "XInputControllerWindows")
+            //        {
+            //            playerInput.SwitchCurrentControlScheme(pad);
+            //        }
+            //    }
+
+            //}
+            //else
+            //{
+            //    if (InputSystem.GetDevice<Gamepad>() is Gamepad pad)
+            //    {
+            //        Debug.Log(pad.displayName);
+            //        if (pad.displayName == "XInputControllerWindows1")
+            //        {
+            //            playerInput.SwitchCurrentControlScheme(pad);
+            //        }
+            //    }
+            //}
+        }
+
+
+
         originalPosition = this.transform.position;
         hasSetOriginalPos = true;
         OnHealthChanged += UIManager.Instance.UpdatePlayerHealth;

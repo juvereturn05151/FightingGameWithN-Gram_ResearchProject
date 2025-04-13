@@ -120,7 +120,7 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        Debug.Log($"GameState changed to: {newState}");
+        //Debug.Log($"GameState changed to: {newState}");
     }
 
     private void ResetState()
