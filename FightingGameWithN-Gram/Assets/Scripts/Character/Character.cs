@@ -222,7 +222,6 @@ public class Character : MonoBehaviour
         {
             if ( distanceFromOpponent <= ATTACK_RANGE * 1.5f) 
             {
-                Debug.Log("counter attack1");
                 aiAttackDecision = true;
                 aiBlockDecision = false;
                 blockedSuccessfully = false; // Clear after punishing
@@ -257,23 +256,22 @@ public class Character : MonoBehaviour
         if (isApproaching && distanceFromOpponent <= ATTACK_RANGE + 0.5f)
         {
             // Ultra-fast reaction (90% success rate)
-            if (opponent.IsAttacking || predictedPlayerAction == Actiontype.Attacking)
+            if (predictedPlayerAction == Actiontype.Attacking)
             {
-                //Debug.Log("it will attack1");
                 aiBlockDecision = true;
                 aiMoveInput.x = 0; // Stop movement to block properly
-
-                // Immediate counter window
-                if (distanceFromOpponent < 1.5f && !opponent.IsAttacking)
-                {
-                    aiAttackDecision = true;
-                }
+                return;
+            } 
+            else if (predictedPlayerAction == Actiontype.Grabbing) 
+            {
+                aiAttackDecision = true;
+                aiMoveInput.x = 0; // Stop movement to aiAttackDecision properly
                 return;
             }
         }
 
         // 2. Close-range mixups
-        if (distanceFromOpponent < 1.5f)
+        if (distanceFromOpponent < throwRange)
         {
             // 30% chance to do something unexpected even when prediction says block
             if (predictedPlayerAction == Actiontype.Blocking && Random.value > 0.3f)
