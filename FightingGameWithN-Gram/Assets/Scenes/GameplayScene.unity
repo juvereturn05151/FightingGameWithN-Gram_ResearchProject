@@ -724,6 +724,7 @@ MonoBehaviour:
   readyDuration: 1.5
   fightDuration: 1
   roundEndDuration: 1
+  restartAction: {fileID: -5176672219437633204, guid: 6905212044b45e241980026cfca3626d, type: 3}
   character1: {fileID: 731694707}
   character2: {fileID: 1517074519}
 --- !u!4 &1047040343

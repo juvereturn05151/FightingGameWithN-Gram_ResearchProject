@@ -1,4 +1,6 @@
+using UnityEditor.Timeline.Actions;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public enum GameState 
 {
@@ -20,7 +22,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float readyDuration = 3f;
     [SerializeField] private float fightDuration = 1f;
     [SerializeField] private float roundEndDuration = 1f;
-
+    [SerializeField] private InputActionReference restartAction;
     public static GameManager Instance
     {
         get
@@ -73,6 +75,10 @@ public class GameManager : MonoBehaviour
 
             case GameState.RoundEnd:
                 if (_stateTimer <= 0) ChangeState(GameState.Ready);
+                break;
+
+            case GameState.MatchEnd:
+                if (restartAction.action.WasPressedThisFrame()) Restart();
                 break;
                 // Add other state transitions as needed
         }
