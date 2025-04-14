@@ -106,6 +106,8 @@ public class Character : MonoBehaviour
 
     const float ATTACK_RANGE = 4.11f;
 
+    bool isMenuCharacter;
+
     private void Start()
     {
         opponent = playerSide == 0 ? GameManager.Instance.character2 : GameManager.Instance.character1;

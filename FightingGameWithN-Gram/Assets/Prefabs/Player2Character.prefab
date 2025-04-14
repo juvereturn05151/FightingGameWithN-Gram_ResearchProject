@@ -52,6 +52,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player2Character
       objectReference: {fileID: 0}
+    - target: {fileID: 4535991513153803617, guid: bdb139526e25a254191758d1d7858f95, type: 3}
+      propertyPath: playerInput
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4678343804409546276, guid: bdb139526e25a254191758d1d7858f95, type: 3}
       propertyPath: attack
       value: 
@@ -64,7 +68,8 @@ PrefabInstance:
       propertyPath: move
       value: 
       objectReference: {fileID: 7609104885679577605, guid: 27380f988e82a4f4f939f1ec490f3acf, type: 3}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6028100015458694918, guid: bdb139526e25a254191758d1d7858f95, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

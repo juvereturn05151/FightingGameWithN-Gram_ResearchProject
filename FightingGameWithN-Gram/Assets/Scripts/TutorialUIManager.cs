@@ -28,14 +28,14 @@ public class TutorialUIManager : MonoBehaviour
     void Update()
     {
         // You can also implement keyboard shortcuts or buttons for navigation
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            ShowPreviousPage();
-        }
-        else if (Input.GetKeyDown(KeyCode.D))
-        {
-            ShowNextPage();
-        }
+        //if (Input.GetKeyDown(KeyCode.A))
+        //{
+        //    ShowPreviousPage();
+        //}
+        //else if (Input.GetKeyDown(KeyCode.D))
+        //{
+        //    ShowNextPage();
+        //}
     }
 
     // Show the specified page and hide others
