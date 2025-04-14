@@ -217,8 +217,9 @@ public class Character : MonoBehaviour
 
         Actiontype predictedPlayerAction = N_Gram.calculateGuessedChoice(opponent.actionLog);
 
-        Debug.Log("predictedPlayerAction: " + predictedPlayerAction);
+        UIManager.Instance.PredictedActionText.text = "Predicted Action: " + predictedPlayerAction;
 
+        //Debug.Log("predictedPlayerAction: " + predictedPlayerAction);
 
         if (blockedSuccessfully)
         {

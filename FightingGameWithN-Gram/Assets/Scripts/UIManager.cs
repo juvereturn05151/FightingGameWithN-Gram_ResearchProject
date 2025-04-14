@@ -25,6 +25,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TMP_Text _winnerText;
     [SerializeField] private TMP_Text _p1WinText;
     [SerializeField] private TMP_Text _p2WinText;
+    [SerializeField] private TMP_Text _predictedActionText;
+    public TMP_Text PredictedActionText => _predictedActionText;
     private void Awake()
     {
         if (Instance != null && Instance != this)
