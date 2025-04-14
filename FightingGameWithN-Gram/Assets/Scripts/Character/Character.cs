@@ -6,7 +6,7 @@ public enum Actiontype
 {
     Attacking = 0,
     Blocking = 1,
-    Grabbing = 2
+    Throwing = 2
 }
 
 public class Character : MonoBehaviour
@@ -218,6 +218,9 @@ public class Character : MonoBehaviour
 
         Actiontype predictedPlayerAction = N_Gram.calculateGuessedChoice(opponent.actionLog);
 
+        Debug.Log("predictedPlayerAction: " + predictedPlayerAction);
+
+
         if (blockedSuccessfully)
         {
             if ( distanceFromOpponent <= ATTACK_RANGE * 1.5f) 
@@ -236,7 +239,7 @@ public class Character : MonoBehaviour
             blockDuration += Time.deltaTime;
 
             // 50% chance to counter after a short block at close range
-            if (blockDuration > 0.3f && distanceFromOpponent < ATTACK_RANGE && Random.value < 0.5f)
+            if (blockDuration > 0.3f && distanceFromOpponent < ATTACK_RANGE)
             {
                 aiAttackDecision = true;
                 aiHoldingBlock = false;
@@ -252,59 +255,14 @@ public class Character : MonoBehaviour
             return;
         }
 
-        // 1. Instant defense during approach
-        if (isApproaching && distanceFromOpponent <= ATTACK_RANGE + 0.5f)
-        {
-            // Ultra-fast reaction (90% success rate)
-            if (predictedPlayerAction == Actiontype.Attacking)
-            {
-                aiBlockDecision = true;
-                aiMoveInput.x = 0; // Stop movement to block properly
-                return;
-            } 
-            else if (predictedPlayerAction == Actiontype.Grabbing) 
-            {
-                aiAttackDecision = true;
-                aiMoveInput.x = 0; // Stop movement to aiAttackDecision properly
-                return;
-            }
-        }
-
-        // 2. Close-range mixups
-        if (distanceFromOpponent < throwRange)
+        // 1. Close-range mixups
+        if (distanceFromOpponent <= throwRange)
         {
             // 30% chance to do something unexpected even when prediction says block
-            if (predictedPlayerAction == Actiontype.Blocking && Random.value > 0.3f)
+            if (predictedPlayerAction == Actiontype.Blocking)
             {
-                if (distanceFromOpponent <= throwRange)
-                {
-                    aiThrowDecision = true;
-                }
-                else 
-                {
-                    float closeRangeChoice = Random.value;
-                    if (closeRangeChoice < 0.5f)
-                    {
-                        aiBlockDecision = true;
-                    }
-                    else 
-                    {
-                        aiMoveInput = new Vector2(1, 0);
-                    }
-                }
- 
-
-            }
-            else
-            {
-                //Debug.Log("it will attack2");
-                // 60% attack, 20% throw, 20% backdash
                 float closeRangeChoice = Random.value;
-                if (closeRangeChoice < 0.6f)
-                {
-                    aiAttackDecision = true;
-                }
-                else if (closeRangeChoice < 0.8f && distanceFromOpponent <= throwRange)
+                if (closeRangeChoice < 0.5f)
                 {
                     aiThrowDecision = true;
                 }
@@ -313,50 +271,74 @@ public class Character : MonoBehaviour
                     aiMoveInput = new Vector2(1, 0);
                 }
             }
+            else if(predictedPlayerAction == Actiontype.Attacking)
+            {
+                aiBlockDecision = true;
+            }
+            else if (predictedPlayerAction == Actiontype.Throwing)
+            {
+                aiAttackDecision = true;
+            }
         }
         // 3. Footsies/movement
         else
         {
-            // Dynamic movement patterns
-            float movementChoice = Random.value;
-
-            // 50% advance normally
-            if (movementChoice < 0.5f)
+            if (distanceFromOpponent <= ATTACK_RANGE)
             {
-                aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? 1 : -1, 0);
-
-                // 20% chance to attack while advancing
-                if (distanceFromOpponent < 2f && Random.value < 0.2f)
+                if (predictedPlayerAction == Actiontype.Blocking)
+                {
+                    aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? 1 : -1, 0);
+                }
+                else if (predictedPlayerAction == Actiontype.Attacking)
+                {
+                    aiBlockDecision = true;
+                }
+                else if (predictedPlayerAction == Actiontype.Throwing)
                 {
                     aiAttackDecision = true;
                 }
             }
-            // 20% quick backdash
-            else if (movementChoice < 0.7f)
+            else 
             {
-                aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? -1 : 1, 0);
-            }
-            // 15% defensive pause (block in place)
-            else if (movementChoice < 0.85f)
-            {
-                aiBlockDecision = true;
-                aiMoveInput = Vector2.zero;
+                // Dynamic movement patterns
 
-                // 50% chance to counter after brief block
-                if (Random.value < 0.5f && distanceFromOpponent < 1.8f)
+                float movementChoice = Random.value;
+
+                // 50% advance normally
+                if (movementChoice < 0.5f)
                 {
-                    aiAttackDecision = true;
+                    aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? 1 : -1, 0);
+
+                    // 20% chance to attack while advancing
+                    if (distanceFromOpponent < 2f && Random.value < 0.2f)
+                    {
+                        aiAttackDecision = true;
+                    }
+                }
+                // 20% quick backdash
+                else if (movementChoice < 0.7f)
+                {
+                    aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? -1 : 1, 0);
+                }
+                // 15% defensive pause (block in place)
+                else if (movementChoice < 0.85f)
+                {
+                    aiBlockDecision = true;
+                    aiMoveInput = Vector2.zero;
+                }
+                // 15% aggressive spam (rapid approach)
+                else
+                {
+                    aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? 1.5f : -1.5f, 0);
+                    if (distanceFromOpponent < 2.2f)
+                    {
+                        aiAttackDecision = true;
+                    }
                 }
             }
-            // 15% aggressive spam (rapid approach)
-            else
-            {
-                aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? 1.5f : -1.5f, 0);
-                if (distanceFromOpponent < 2.2f)
-                {
-                    aiAttackDecision = true;
-                }
-            }
+
+
+
         }
     }
 
@@ -545,7 +527,7 @@ public class Character : MonoBehaviour
         bool throwPressed = isAI ? aiThrowDecision : throwAction.action.WasPressedThisFrame();
         if (throwPressed)
         {
-            QueueAction(Actiontype.Grabbing);
+            QueueAction(Actiontype.Throwing);
             if (IsOpponentWithinThrowRange())
             {
                 ExecuteThrow();

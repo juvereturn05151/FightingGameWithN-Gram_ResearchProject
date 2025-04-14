@@ -27,7 +27,7 @@ public class ActionDisplay : MonoBehaviour
                     case (Actiontype.Blocking):
                         LinkedText.text += "B -> ";
                         break;
-                    case (Actiontype.Grabbing):
+                    case (Actiontype.Throwing):
                         LinkedText.text += "G -> ";
                         break;
                     default:

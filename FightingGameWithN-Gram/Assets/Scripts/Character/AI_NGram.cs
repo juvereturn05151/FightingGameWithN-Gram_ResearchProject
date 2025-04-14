@@ -10,9 +10,10 @@ public class N_Gram : MonoBehaviour
     {
         ActionChance chances = new ActionChance();
 
-        if (actionlog.Count == 0) 
-        { 
-            return chances; 
+        // Safety check: need at least 2 actions to make a prediction
+        if (actionlog.Count < 2)
+        {
+            return chances;
         }
 
         ActionChance[] ActionCount = new ActionChance[]
@@ -23,27 +24,33 @@ public class N_Gram : MonoBehaviour
         };
 
         Actiontype[] index = actionlog.ToArray();
-        for (int i = 0; i < actionlog.Count - 1; i++) 
+        for (int i = 0; i < actionlog.Count - 1; i++)
         {
-            int type = (int)index[i];
-            int nextType = (int)index[i + 1];
+            int currentType = (int)index[i];
+            Actiontype nextType = index[i + 1];
 
-            switch (nextType) 
+            if (currentType < 0 || currentType >= ActionCount.Length) continue;
+
+            switch (nextType)
             {
-                case(0):
-                    ActionCount[type].Attack += 1;
+                case Actiontype.Attacking:
+                    ActionCount[currentType].Attack += 1;
                     break;
-                case(1):
-                    ActionCount[type].Block += 1;
+                case Actiontype.Blocking:
+                    ActionCount[currentType].Block += 1;
                     break;
-                case(2):
-                    ActionCount[type].Throw += 1;
+                case Actiontype.Throwing:
+                    ActionCount[currentType].Throw += 1;
                     break;
             }
         }
 
-        int relevant_chances = (int)index[actionlog.Count - 1];
-        chances = ActionCount[relevant_chances];
+
+        int lastAction = (int)index[actionlog.Count - 1];
+        if (lastAction >= 0 && lastAction < ActionCount.Length)
+        {
+            chances = ActionCount[lastAction];
+        }
         chances.Normalize();
 
         return chances;
@@ -53,9 +60,9 @@ public class N_Gram : MonoBehaviour
     public static Actiontype calculateGuessedChoice(Queue<Actiontype> actionlog)
     {
         ActionChance odds = calculateNextPick(actionlog);
-        float choice = Random.Range(0, 1);
-        
-        if(choice <= odds.Attack)
+        float choice = Random.Range(0f, 1f);
+
+        if (choice <= odds.Attack)
         {
             return Actiontype.Attacking;
         }
@@ -65,7 +72,7 @@ public class N_Gram : MonoBehaviour
         }
         else //must be > A and B so G
         {
-            return Actiontype.Grabbing;
+            return Actiontype.Throwing;
         }
     }
 }
