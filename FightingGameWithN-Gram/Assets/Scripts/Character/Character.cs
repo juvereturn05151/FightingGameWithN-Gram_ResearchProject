@@ -208,7 +208,6 @@ public class Character : MonoBehaviour
     private void MakeAIDecision()
     {
         distanceFromOpponent = Vector2.Distance(transform.position, opponent.transform.position);
-        bool isApproaching = Random.value < 0.8f;
 
         // Reset decisions
         aiMoveInput = Vector2.zero;

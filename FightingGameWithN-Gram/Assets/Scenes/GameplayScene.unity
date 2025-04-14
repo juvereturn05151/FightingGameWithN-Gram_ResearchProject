@@ -1223,11 +1223,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6028100015458694918, guid: bdb139526e25a254191758d1d7858f95, type: 3}
       propertyPath: m_DefaultControlScheme
-      value: Keyboard
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6028100015458694918, guid: bdb139526e25a254191758d1d7858f95, type: 3}
       propertyPath: m_NeverAutoSwitchControlSchemes
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
