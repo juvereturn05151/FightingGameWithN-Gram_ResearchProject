@@ -121,13 +121,6 @@ public class Character : MonoBehaviour
 
         if (!isReadyToFight) return;
 
-        if (this.isAI)
-        {
-            this.TryAIHitConfirm(); // Immediate follow-up if AI landed the hit
-        }
-
-        HandleAI();
-
         if (!holdBlock)
         {
             block = false;
@@ -154,6 +147,15 @@ public class Character : MonoBehaviour
         {
             return;
         }
+
+        if (this.isAI)
+        {
+            this.TryAIHitConfirm(); // Immediate follow-up if AI landed the hit
+        }
+
+        HandleAI();
+
+        
 
         if (hitConfirmSuccess)
         {
@@ -218,10 +220,11 @@ public class Character : MonoBehaviour
 
         if (blockedSuccessfully)
         {
-            if (!opponent.IsAttacking && distanceFromOpponent <= ATTACK_RANGE)
+            if ( distanceFromOpponent <= ATTACK_RANGE * 1.5f) 
             {
                 Debug.Log("counter attack1");
                 aiAttackDecision = true;
+                aiBlockDecision = false;
                 blockedSuccessfully = false; // Clear after punishing
                 return;
             }
@@ -557,24 +560,6 @@ public class Character : MonoBehaviour
             }
             return;
         }
-
-        // Original movement-based throw system
-        //if (IsOpponentWithinThrowRange())
-        //{
-        //    bool attackPressed = isAI ? aiAttackDecision : attackAction.action.WasPressedThisFrame();
-        //    if (attackPressed)
-        //    {
-        //        Vector2 moveInput = isAI ? aiMoveInput : moveAction.action.ReadValue<Vector2>();
-        //        bool movingTowardOpponent = (playerSide == 0 && moveInput.x > 0) ||
-        //                                  (playerSide == 1 && moveInput.x < 0);
-
-        //        if (movingTowardOpponent)
-        //        {
-        //            ExecuteThrow();
-        //            return;
-        //        }
-        //    }
-        //}
 
         // Regular attack
         bool attackInput = isAI ? aiAttackDecision : attackAction.action.WasPressedThisFrame();
