@@ -20,9 +20,9 @@ public class ChanceDisplay : MonoBehaviour
             ActionChance chances = new ActionChance();
             chances = N_Gram.calculateNextPick(target_character.actionLog);
             //display
-            LinkedText.text += "A : " + chances.A*100 + "%\n";
-            LinkedText.text += "B : " + chances.B*100 + "%\n";
-            LinkedText.text += "G : " + chances.G*100 + "%\n";
+            LinkedText.text += "A : " + chances.Attack*100 + "%\n";
+            LinkedText.text += "B : " + chances.Block*100 + "%\n";
+            LinkedText.text += "G : " + chances.Throw*100 + "%\n";
         }
     }
 

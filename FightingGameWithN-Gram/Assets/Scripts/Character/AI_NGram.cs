@@ -8,7 +8,12 @@ public class N_Gram : MonoBehaviour
     public static ActionChance calculateNextPick(Queue<Actiontype> actionlog)
     {
         ActionChance chances = new ActionChance();
-        if (actionlog.Count == 0) { return chances; }
+
+        if (actionlog.Count == 0) 
+        { 
+            return chances; 
+        }
+
         ActionChance[] ActionCount = new ActionChance[]
         {
             new ActionChance(), //Attacking
@@ -17,18 +22,20 @@ public class N_Gram : MonoBehaviour
         };
 
         Actiontype[] index = actionlog.ToArray();
-        for (int i = 0; i < actionlog.Count - 1; i++) {
+        for (int i = 0; i < actionlog.Count - 1; i++) 
+        {
             int type = (int)index[i];
             int nextType = (int)index[i + 1];
-            switch (nextType) {
+            switch (nextType) 
+            {
                 case(0):
-                    ActionCount[type].A += 1;
+                    ActionCount[type].Attack += 1;
                     break;
                 case(1):
-                    ActionCount[type].B += 1;
+                    ActionCount[type].Block += 1;
                     break;
                 case(2):
-                    ActionCount[type].G += 1;
+                    ActionCount[type].Throw += 1;
                     break;
             }
         }
@@ -41,16 +48,16 @@ public class N_Gram : MonoBehaviour
         return chances;
     }
 
-        //Calculates a guess of what the next player input choice will be.
+    //Calculates a guess of what the next player input choice will be.
     public static Actiontype calculateGuessedChoice(Queue<Actiontype> actionlog)
     {
         ActionChance odds = calculateNextPick(actionlog);
         float choice = Random.Range(0, 1);
-        if(choice <= odds.A)
+        if(choice <= odds.Attack)
         {
             return Actiontype.Attacking;
         }
-        else if(choice <= odds.A + odds.B)
+        else if(choice <= odds.Attack + odds.Block)
         {
             return Actiontype.Blocking;
         }
@@ -66,29 +73,29 @@ public class ActionChance
 {
     public ActionChance()
     {
-        this.A = 0;
-        this.B = 0;
-        this.G = 0;
+        this.Attack = 0;
+        this.Block = 0;
+        this.Throw = 0;
     }
 
     public ActionChance(float a, float b, float g)
     {
-        this.A = a;
-        this.B = b;
-        this.G = g;
+        this.Attack = a;
+        this.Block = b;
+        this.Throw = g;
     }
 
-    public float A = 0.33f;
-    public float B = 0.33f;
-    public float G = 0.33f;
+    public float Attack = 0.33f;
+    public float Block = 0.33f;
+    public float Throw = 0.33f;
 
     public void Normalize()    //Assumes values not added
     {
-        float total = A + B + G;
+        float total = Attack + Block + Throw;
         if (total == 0) return;
-        A = A / total;
-        B = B / total;
-        G = G / total;
+        Attack = Attack / total;
+        Block = Block / total;
+        Throw = Throw / total;
         total = 1;
     }
 }
