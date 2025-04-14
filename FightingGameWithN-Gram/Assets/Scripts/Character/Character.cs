@@ -51,8 +51,6 @@ public class Character : MonoBehaviour
     [SerializeField] private AudioClip throwSound;
     [SerializeField] private AudioClip whiffThrowSound;
 
-    [SerializeField] bool useGamePad;
-
     private Character opponent;
     private float aiTimer = 0f;
     private Vector2 aiMoveInput;
@@ -253,6 +251,16 @@ public class Character : MonoBehaviour
         }
     }
 
+    private void QueueAction(Actiontype t)
+    {
+        actionLog.Enqueue(t);
+        //Maintain an action log of a set size.
+        if (actionLog.Count > ACTION_LOG_SIZE)
+        {
+            actionLog.Dequeue();
+        }
+    }
+
     public void SetAIInput(Vector2 moveInput, bool attack, bool block, bool throwInput)
     {
         aiMoveInput = moveInput;
@@ -267,20 +275,7 @@ public class Character : MonoBehaviour
         OnHealthChanged?.Invoke(playerSide, currentHealth);
     }
 
-    private void HandleIsBlocking()
-    {
-        animator.SetBool(blockHash, true);
-        isBlocking = false;
-    }
-
-    private void HandleLoseState()
-    {
-        animator.SetBool(youLoseHash, true);
-        audioSource.PlayOneShot(hurtSound);
-
-        float forceDirection = playerSide == 0 ? -throwForce : throwForce;
-        rb.AddForce(new Vector2(forceDirection, throwForce), ForceMode2D.Impulse);
-    }
+    #region HitConfirm
 
     private void HandleIsAbleToHitConfirmState()
     {
@@ -315,6 +310,10 @@ public class Character : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region Throw
+
     public void OnThrowFinished()
     {
         if (!youWin)
@@ -324,6 +323,52 @@ public class Character : MonoBehaviour
             opponent.SetYouLose(true);
         }
     }
+
+    private void HandleThrowState()
+    {
+        animator.SetBool(throwHash, true);
+    }
+
+    private void ExecuteThrow()
+    {
+        // Check if opponent is attacking - if so, the throw should fail
+        if (opponent.IsAttacking)
+        {
+            // Whiff throw (attack beats throw)
+            animator.SetTrigger(whiffThrowHash);
+            audioSource.PlayOneShot(whiffThrowSound);
+            return;
+        }
+
+        isThrowing = true;
+        float xOffset = playerSide == 0 ? 1.75f : -1.75f;
+
+        opponent.transform.position = transform.position + new Vector3(xOffset, 2f, 0);
+        opponent.SetBeingThrown(true);
+        audioSource.PlayOneShot(throwSound);
+
+        if (isAI)
+        {
+            aiAttackDecision = false;
+            aiThrowDecision = false;
+        }
+    }
+
+    private bool IsOpponentWithinThrowRange()
+    {
+        if (opponent == null) return false;
+        distanceFromOpponent = Vector2.Distance(transform.position, opponent.transform.position);
+        return distanceFromOpponent < throwRange;
+    }
+
+    public void OnWhiffThrowFinished()
+    {
+        animator.SetBool(whiffThrowHash, false);
+    }
+
+    #endregion
+
+    #region Hurt
 
     private void HandleHurtState()
     {
@@ -338,10 +383,39 @@ public class Character : MonoBehaviour
         opponent.SetCanHitConfirm(false);
     }
 
-    private void HandleThrowState()
+    public void TriggerHurt()
     {
-        animator.SetBool(throwHash, true);
+        if (block)
+        {
+            if (!isBlocking)
+            {
+                isBlocking = true;
+                audioSource.PlayOneShot(guardSound);
+            }
+            return;
+        }
+
+        if (holdBlock)
+        {
+            audioSource.PlayOneShot(guardSound);
+            return;
+        }
+
+        if (youLose) return;
+
+        animator.SetTrigger(hurtHash);
+        isHurt = true;
+        isAttacking = false;
+        animator.SetBool(attackHash, false);
+        audioSource.PlayOneShot(hitSound);
+        hitBox.enabled = false;
+
+        opponent.SetCanHitConfirm(true);
     }
+
+    #endregion
+
+    #region Attack
 
     private void HandleAttackState()
     {
@@ -403,6 +477,25 @@ public class Character : MonoBehaviour
         if (isAI) aiAttackDecision = false;
     }
 
+    public void Attack()
+    {
+        // If opponent is attempting to throw, this attack should beat it
+        if (opponent.IsThrowing)
+        {
+            opponent.OnWhiffThrowFinished(); // Cancel opponent's throw attempt
+        }
+
+        QueueAction(Actiontype.Attacking);
+        isAttacking = true;
+        hitBox.enabled = true;
+        audioSource.PlayOneShot(attackSound);
+        if (isAI) aiAttackDecision = false;
+    }
+
+    #endregion
+
+    #region Movement
+
     private void HandleMovement()
     {
         Vector2 moveInput = isAI ? aiMoveInput : moveAction.action.ReadValue<Vector2>();
@@ -439,6 +532,16 @@ public class Character : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region GuardOrBlock
+
+    private void HandleIsBlocking()
+    {
+        animator.SetBool(blockHash, true);
+        isBlocking = false;
+    }
+
     private void HandleGuard()
     {
         bool blockInput = isAI ? aiBlockDecision : blockAction.action.IsPressed();
@@ -457,75 +560,33 @@ public class Character : MonoBehaviour
         }
     }
 
-    private void ExecuteThrow()
+    #endregion
+
+    #region YouLose
+
+    private void HandleLoseState()
     {
-        // Check if opponent is attacking - if so, the throw should fail
-        if (opponent.IsAttacking)
+        animator.SetBool(youLoseHash, true);
+        audioSource.PlayOneShot(hurtSound);
+
+        float forceDirection = playerSide == 0 ? -throwForce : throwForce;
+        rb.AddForce(new Vector2(forceDirection, throwForce), ForceMode2D.Impulse);
+    }
+
+    public void OnYouLoseFinished()
+    {
+        if (currentHealth <= 0)
         {
-            // Whiff throw (attack beats throw)
-            animator.SetTrigger(whiffThrowHash);
-            audioSource.PlayOneShot(whiffThrowSound);
-            return;
+            UIManager.Instance.UpdateWinnerText(opponent.PlayerSide);
+            GameManager.Instance.ChangeState(GameState.MatchEnd);
         }
-
-        isThrowing = true;
-        float xOffset = playerSide == 0 ? 1.75f : -1.75f;
-
-        opponent.transform.position = transform.position + new Vector3(xOffset, 2f, 0);
-        opponent.SetBeingThrown(true);
-        audioSource.PlayOneShot(throwSound);
-
-        if (isAI)
+        else
         {
-            aiAttackDecision = false;
-            aiThrowDecision = false;
+            GameManager.Instance.ChangeState(GameState.RoundEnd);
         }
     }
 
-    public void TriggerHurt()
-    {
-        if (block)
-        {
-            if (!isBlocking)
-            {
-                isBlocking = true;
-                audioSource.PlayOneShot(guardSound);
-            }
-            return;
-        }
-
-        if (holdBlock)
-        {
-            audioSource.PlayOneShot(guardSound);
-            return;
-        }
-
-        if (youLose) return;
-
-        animator.SetTrigger(hurtHash);
-        isHurt = true;
-        isAttacking = false;
-        animator.SetBool(attackHash, false);
-        audioSource.PlayOneShot(hitSound);
-        hitBox.enabled = false;
-
-        opponent.SetCanHitConfirm(true);
-    }
-
-    public void Attack()
-    {
-        // If opponent is attempting to throw, this attack should beat it
-        if (opponent.IsThrowing)
-        {
-            opponent.OnWhiffThrowFinished(); // Cancel opponent's throw attempt
-        }
-
-        QueueAction(Actiontype.Attacking);
-        isAttacking = true;
-        hitBox.enabled = true;
-        audioSource.PlayOneShot(attackSound);
-        if (isAI) aiAttackDecision = false;
-    }
+    #endregion
 
     public void ResetState()
     {
@@ -567,12 +628,7 @@ public class Character : MonoBehaviour
         }
     }
 
-    private bool IsOpponentWithinThrowRange()
-    {
-        if (opponent == null) return false;
-        distanceFromOpponent = Vector2.Distance(transform.position, opponent.transform.position);
-        return distanceFromOpponent < throwRange;
-    }
+
 
     // Public properties and methods
     public int PlayerSide => playerSide;
@@ -610,38 +666,9 @@ public class Character : MonoBehaviour
     public void SetBeingThrown(bool thrown) => beingThrown = thrown;
     public void SetIsReadyToPlay(bool isReady) => isReadyToFight = isReady;
 
-    public void OnYouLoseFinished()
-    {
-        if (currentHealth <= 0)
-        {
-            UIManager.Instance.UpdateWinnerText(opponent.PlayerSide);
-            GameManager.Instance.ChangeState(GameState.MatchEnd);
-        }
-        else
-        {
-            GameManager.Instance.ChangeState(GameState.RoundEnd);
-        }
-    }
 
-    private void QueueAction(Actiontype t)
-    {
-        actionLog.Enqueue(t);
-            //Maintain an action log of a set size.
-        if(actionLog.Count > ACTION_LOG_SIZE)
-        {
-            actionLog.Dequeue();
-        }
-    }
 
-    public void OnWhiffThrowFinished() 
-    {
-        animator.SetBool(whiffThrowHash, false);
-    }
 
-    private bool AttackBeatsThrow(Character attacker, Character thrower)
-    {
-        // Attack beats throw if the attacker is currently in an attack animation
-        // and the thrower is attempting to throw at the same time
-        return attacker.IsAttacking && thrower.IsThrowing;
-    }
+
+
 }
