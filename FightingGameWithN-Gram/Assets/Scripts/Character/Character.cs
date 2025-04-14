@@ -106,7 +106,7 @@ public class Character : MonoBehaviour
     {
         opponent = playerSide == 0 ? GameManager.Instance.character2 : GameManager.Instance.character1;
 
-        originalPosition = this.transform.position;
+        originalPosition = transform.position;
         hasSetOriginalPos = true;
         OnHealthChanged += UIManager.Instance.UpdatePlayerHealth;
         Init();
@@ -116,16 +116,7 @@ public class Character : MonoBehaviour
     {
         if (!isReadyToFight) return;
 
-        // AI decision making
-        if (isAI)
-        {
-            aiTimer += Time.deltaTime;
-            if (aiTimer >= aiDecisionInterval)
-            {
-                MakeAIDecision();
-                aiTimer = 0f;
-            }
-        }
+        HandleAI();
 
         if (!holdBlock)
         {
@@ -188,65 +179,71 @@ public class Character : MonoBehaviour
         }
     }
 
+    private void HandleAI() 
+    {
+        // AI decision making
+        if (isAI)
+        {
+            aiTimer += Time.deltaTime;
+            if (aiTimer >= aiDecisionInterval)
+            {
+                MakeAIDecision();
+                aiTimer = 0f;
+            }
+        }
+    }
+
     private void MakeAIDecision()
     {
         distanceFromOpponent = Vector2.Distance(transform.position, opponent.transform.position);
+        bool isApproaching = Mathf.Sign(aiMoveInput.x) == Mathf.Sign(opponent.transform.position.x - transform.position.x);
 
-        // Reset AI decisions
+        // Reset decisions
         aiMoveInput = Vector2.zero;
         aiAttackDecision = false;
         aiBlockDecision = false;
         aiThrowDecision = false;
 
-        if (opponent.IsAttacking && distanceFromOpponent < 2f)
+        Actiontype predictedPlayerAction = N_Gram.calculateGuessedChoice(opponent.actionLog);
+
+        // 1. Instant defense during approach
+        if (isApproaching && distanceFromOpponent < 2.2f)
         {
-            // Either block or counter-attack
-            if (Random.value < 0.7f)
+            // Ultra-fast reaction (90% success rate)
+            if (opponent.IsAttacking || predictedPlayerAction == Actiontype.Attacking)
             {
                 aiBlockDecision = true;
+                aiMoveInput.x = 0; // Stop movement to block properly
+
+                // Immediate counter window
+                if (distanceFromOpponent < 1.5f && !opponent.IsAttacking)
+                {
+                    aiAttackDecision = true;
+                }
+                return; // Skip other logic to prioritize defense
             }
-            else if (Random.value < 0.5f)
+        }
+
+        // 2. Normal combat logic
+        if (distanceFromOpponent < 1.5f) // Close range
+        {
+            if (predictedPlayerAction == Actiontype.Blocking)
+            {
+                aiThrowDecision = true;
+            }
+            else
             {
                 aiAttackDecision = true;
             }
         }
-        else if (distanceFromOpponent < throwRange * 1.2f)
+        else // Movement
         {
-            // Close range behavior
-            if (Random.value < aiAggressiveness)
+            aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? 1 : -1, 0);
+
+            // Pre-emptive attack at optimal range
+            if (distanceFromOpponent < 2f && Random.value < 0.3f)
             {
-                // Decide between regular attack or throw
-                if (Random.value < aiThrowProbability)
-                {
-                    // Use throw button
-                    aiThrowDecision = true;
-                }
-                else
-                {
-                    // Use regular attack or movement throw
-                    aiAttackDecision = true;
-                    aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? 1 : -1, 0);
-                }
-            }
-            else
-            {
-                // Retreat
-                aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? -1 : 1, 0);
-            }
-        }
-        else
-        {
-            // Mid/far range behavior
-            if (Random.value < aiAggressiveness * 0.7f)
-            {
-                // Approach
-                aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? 1 : -1, 0);
-            }
-            else
-            {
-                // Hold position or move back slightly
-                aiMoveInput = Random.value < 0.3f ? Vector2.zero :
-                    new Vector2(opponent.transform.position.x > transform.position.x ? -0.5f : 0.5f, 0);
+                aiAttackDecision = true;
             }
         }
     }
@@ -419,6 +416,11 @@ public class Character : MonoBehaviour
 
     private void HandleAttackState()
     {
+        if (holdBlock) 
+        {
+            return;
+        }
+
         if (isAttacking)
         {
             animator.SetBool(attackHash, true);

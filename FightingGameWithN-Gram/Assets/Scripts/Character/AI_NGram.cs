@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public class N_Gram : MonoBehaviour
 {
+    //Calculate next choice of the opponent;
     public static ActionChance calculateNextPick(Queue<Actiontype> actionlog)
     {
         ActionChance chances = new ActionChance();
@@ -18,7 +19,7 @@ public class N_Gram : MonoBehaviour
         {
             new ActionChance(), //Attacking
             new ActionChance(), //Blocking
-            new ActionChance()  //Grabbing
+            new ActionChance()  //Throwing
         };
 
         Actiontype[] index = actionlog.ToArray();
@@ -26,6 +27,7 @@ public class N_Gram : MonoBehaviour
         {
             int type = (int)index[i];
             int nextType = (int)index[i + 1];
+
             switch (nextType) 
             {
                 case(0):
@@ -39,7 +41,6 @@ public class N_Gram : MonoBehaviour
                     break;
             }
         }
-        //ActionChance chances = new ActionChance();
 
         int relevant_chances = (int)index[actionlog.Count - 1];
         chances = ActionCount[relevant_chances];
@@ -53,6 +54,7 @@ public class N_Gram : MonoBehaviour
     {
         ActionChance odds = calculateNextPick(actionlog);
         float choice = Random.Range(0, 1);
+        
         if(choice <= odds.Attack)
         {
             return Actiontype.Attacking;
