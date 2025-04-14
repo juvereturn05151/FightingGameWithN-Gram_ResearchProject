@@ -100,7 +100,7 @@ public class Character : MonoBehaviour
 
     private bool aiHoldingBlock = false;
     private float blockDuration = 0f;
-    private float maxBlockDuration = 2.0f;
+    private float maxBlockDuration = 3.0f;
 
     private bool blockedSuccessfully = false;
 
@@ -237,14 +237,6 @@ public class Character : MonoBehaviour
         {
             aiBlockDecision = true;
             blockDuration += Time.deltaTime;
-
-            // 50% chance to counter after a short block at close range
-            if (blockDuration > 0.3f && distanceFromOpponent < ATTACK_RANGE)
-            {
-                aiAttackDecision = true;
-                aiHoldingBlock = false;
-                blockDuration = 0f;
-            }
 
             if (blockDuration >= maxBlockDuration)
             {

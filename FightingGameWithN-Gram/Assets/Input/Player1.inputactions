@@ -242,7 +242,7 @@
                 {
                     "name": "",
                     "id": "c959df26-0835-43bd-8cfe-e65ffe645f77",
-                    "path": "<Gamepad>/rightStickPress",
+                    "path": "<Gamepad>/start",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

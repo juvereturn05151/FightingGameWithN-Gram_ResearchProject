@@ -17,10 +17,14 @@ public class UIManager : MonoBehaviour
     [SerializeField] private HealthBar _player1Health;
     [SerializeField] private HealthBar _player2Health;
 
+    public int p1WinCount;
+    public int p2WinCount;
+
     // Game Info
     [Header("Game Info")]
     [SerializeField] private TMP_Text _winnerText;
-
+    [SerializeField] private TMP_Text _p1WinText;
+    [SerializeField] private TMP_Text _p2WinText;
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -52,10 +56,14 @@ public class UIManager : MonoBehaviour
         if (winnerID == 0)
         {
             _winnerText.text = "Player 1 Win";
+            p1WinCount++;
+            _p1WinText.text = "Win: " + p1WinCount.ToString();
         }
         else 
         {
             _winnerText.text = "Player 2 Win";
+            p2WinCount++;
+            _p2WinText.text = "Win: " + p2WinCount.ToString();
         }
     }
 }

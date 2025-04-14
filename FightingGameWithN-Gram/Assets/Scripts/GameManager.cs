@@ -39,6 +39,8 @@ public class GameManager : MonoBehaviour
 
     public Character character1;
     public Character character2;
+
+
     public GameState CurrentState => _currentState;
 
     private void Awake()
