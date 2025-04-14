@@ -23,7 +23,6 @@ public class Character : MonoBehaviour
     [SerializeField] private bool isAI = false;
     [SerializeField] private float aiDecisionInterval = 0.5f;
     [SerializeField] private float aiAggressiveness = 0.5f; // 0-1 range
-    [SerializeField] private float aiThrowProbability = 0.3f; // Chance AI will use throw button
 
     [Header("Components")]
     [SerializeField] private Animator animator;
@@ -115,6 +114,11 @@ public class Character : MonoBehaviour
     private void Update()
     {
         if (!isReadyToFight) return;
+
+        if (this.isAI)
+        {
+            this.TryAIHitConfirm(); // Immediate follow-up if AI landed the hit
+        }
 
         HandleAI();
 
@@ -245,6 +249,14 @@ public class Character : MonoBehaviour
             {
                 aiAttackDecision = true;
             }
+        }
+    }
+
+    public void TryAIHitConfirm()
+    {
+        if (isAI && isAbleToHitConfirm && !hitConfirmSuccess)
+        {
+            aiAttackDecision = true; // trigger the hit confirm
         }
     }
 
