@@ -98,7 +98,13 @@ public class Character : MonoBehaviour
     public const int ACTION_LOG_SIZE = 30;
     public Queue<Actiontype> actionLog = new Queue<Actiontype>();
 
+    private bool aiHoldingBlock = false;
+    private float blockDuration = 0f;
+    private float maxBlockDuration = 2.0f;
 
+    private bool blockedSuccessfully = false;
+
+    const float ATTACK_RANGE = 4.11f;
 
     private void Start()
     {
@@ -112,6 +118,7 @@ public class Character : MonoBehaviour
 
     private void Update()
     {
+
         if (!isReadyToFight) return;
 
         if (this.isAI)
@@ -199,7 +206,7 @@ public class Character : MonoBehaviour
     private void MakeAIDecision()
     {
         distanceFromOpponent = Vector2.Distance(transform.position, opponent.transform.position);
-        bool isApproaching = Mathf.Sign(aiMoveInput.x) == Mathf.Sign(opponent.transform.position.x - transform.position.x);
+        bool isApproaching = Random.value < 0.8f;
 
         // Reset decisions
         aiMoveInput = Vector2.zero;
@@ -209,12 +216,47 @@ public class Character : MonoBehaviour
 
         Actiontype predictedPlayerAction = N_Gram.calculateGuessedChoice(opponent.actionLog);
 
+        if (blockedSuccessfully)
+        {
+            if (!opponent.IsAttacking && distanceFromOpponent <= ATTACK_RANGE)
+            {
+                Debug.Log("counter attack1");
+                aiAttackDecision = true;
+                blockedSuccessfully = false; // Clear after punishing
+                return;
+            }
+        }
+
+        // 1. Continue holding block if AI decided to sit and block earlier
+        if (aiHoldingBlock)
+        {
+            aiBlockDecision = true;
+            blockDuration += Time.deltaTime;
+
+            // 50% chance to counter after a short block at close range
+            if (blockDuration > 0.3f && distanceFromOpponent < ATTACK_RANGE && Random.value < 0.5f)
+            {
+                aiAttackDecision = true;
+                aiHoldingBlock = false;
+                blockDuration = 0f;
+            }
+
+            if (blockDuration >= maxBlockDuration)
+            {
+                aiHoldingBlock = false;
+                blockDuration = 0f;
+            }
+
+            return;
+        }
+
         // 1. Instant defense during approach
-        if (isApproaching && distanceFromOpponent < 2.2f)
+        if (isApproaching && distanceFromOpponent <= ATTACK_RANGE + 0.5f)
         {
             // Ultra-fast reaction (90% success rate)
             if (opponent.IsAttacking || predictedPlayerAction == Actiontype.Attacking)
             {
+                //Debug.Log("it will attack1");
                 aiBlockDecision = true;
                 aiMoveInput.x = 0; // Stop movement to block properly
 
@@ -233,23 +275,41 @@ public class Character : MonoBehaviour
             // 30% chance to do something unexpected even when prediction says block
             if (predictedPlayerAction == Actiontype.Blocking && Random.value > 0.3f)
             {
-                aiThrowDecision = true;
+                if (distanceFromOpponent <= throwRange)
+                {
+                    aiThrowDecision = true;
+                }
+                else 
+                {
+                    float closeRangeChoice = Random.value;
+                    if (closeRangeChoice < 0.5f)
+                    {
+                        aiBlockDecision = true;
+                    }
+                    else 
+                    {
+                        aiMoveInput = new Vector2(1, 0);
+                    }
+                }
+ 
+
             }
             else
             {
+                //Debug.Log("it will attack2");
                 // 60% attack, 20% throw, 20% backdash
                 float closeRangeChoice = Random.value;
                 if (closeRangeChoice < 0.6f)
                 {
                     aiAttackDecision = true;
                 }
-                else if (closeRangeChoice < 0.8f)
+                else if (closeRangeChoice < 0.8f && distanceFromOpponent <= throwRange)
                 {
                     aiThrowDecision = true;
                 }
                 else
                 {
-                    aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? -1 : 1, 0);
+                    aiMoveInput = new Vector2(1, 0);
                 }
             }
         }
@@ -315,14 +375,6 @@ public class Character : MonoBehaviour
         {
             actionLog.Dequeue();
         }
-    }
-
-    public void SetAIInput(Vector2 moveInput, bool attack, bool block, bool throwInput)
-    {
-        aiMoveInput = moveInput;
-        aiAttackDecision = attack;
-        aiBlockDecision = block;
-        aiThrowDecision = throwInput;
     }
 
     public void Init()
@@ -445,6 +497,7 @@ public class Character : MonoBehaviour
         {
             if (!isBlocking)
             {
+                blockedSuccessfully = true;
                 isBlocking = true;
                 audioSource.PlayOneShot(guardSound);
             }
@@ -453,6 +506,7 @@ public class Character : MonoBehaviour
 
         if (holdBlock)
         {
+            blockedSuccessfully = true;
             audioSource.PlayOneShot(guardSound);
             return;
         }
@@ -605,6 +659,11 @@ public class Character : MonoBehaviour
 
     private void HandleGuard()
     {
+        if (isAttacking) 
+        {
+            return;
+        }
+
         bool blockInput = isAI ? aiBlockDecision : blockAction.action.IsPressed();
         if (blockInput)
         {
