@@ -1144,7 +1144,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5601527512104552165, guid: 2297467dc93fe8d43a62b77d7d3ebd0b, type: 3}
       propertyPath: m_DefaultControlScheme
-      value: 
+      value: Keyboard
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
