@@ -22,7 +22,6 @@ public class Character : MonoBehaviour
     [Header("AI Settings")]
     [SerializeField] private bool isAI = false;
     [SerializeField] private float aiDecisionInterval = 0.5f;
-    [SerializeField] private float aiAggressiveness = 0.5f; // 0-1 range
 
     [Header("Components")]
     [SerializeField] private Animator animator;
@@ -224,30 +223,78 @@ public class Character : MonoBehaviour
                 {
                     aiAttackDecision = true;
                 }
-                return; // Skip other logic to prioritize defense
+                return;
             }
         }
 
-        // 2. Normal combat logic
-        if (distanceFromOpponent < 1.5f) // Close range
+        // 2. Close-range mixups
+        if (distanceFromOpponent < 1.5f)
         {
-            if (predictedPlayerAction == Actiontype.Blocking)
+            // 30% chance to do something unexpected even when prediction says block
+            if (predictedPlayerAction == Actiontype.Blocking && Random.value > 0.3f)
             {
                 aiThrowDecision = true;
             }
             else
             {
-                aiAttackDecision = true;
+                // 60% attack, 20% throw, 20% backdash
+                float closeRangeChoice = Random.value;
+                if (closeRangeChoice < 0.6f)
+                {
+                    aiAttackDecision = true;
+                }
+                else if (closeRangeChoice < 0.8f)
+                {
+                    aiThrowDecision = true;
+                }
+                else
+                {
+                    aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? -1 : 1, 0);
+                }
             }
         }
-        else // Movement
+        // 3. Footsies/movement
+        else
         {
-            aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? 1 : -1, 0);
+            // Dynamic movement patterns
+            float movementChoice = Random.value;
 
-            // Pre-emptive attack at optimal range
-            if (distanceFromOpponent < 2f && Random.value < 0.3f)
+            // 50% advance normally
+            if (movementChoice < 0.5f)
             {
-                aiAttackDecision = true;
+                aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? 1 : -1, 0);
+
+                // 20% chance to attack while advancing
+                if (distanceFromOpponent < 2f && Random.value < 0.2f)
+                {
+                    aiAttackDecision = true;
+                }
+            }
+            // 20% quick backdash
+            else if (movementChoice < 0.7f)
+            {
+                aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? -1 : 1, 0);
+            }
+            // 15% defensive pause (block in place)
+            else if (movementChoice < 0.85f)
+            {
+                aiBlockDecision = true;
+                aiMoveInput = Vector2.zero;
+
+                // 50% chance to counter after brief block
+                if (Random.value < 0.5f && distanceFromOpponent < 1.8f)
+                {
+                    aiAttackDecision = true;
+                }
+            }
+            // 15% aggressive spam (rapid approach)
+            else
+            {
+                aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? 1.5f : -1.5f, 0);
+                if (distanceFromOpponent < 2.2f)
+                {
+                    aiAttackDecision = true;
+                }
             }
         }
     }
