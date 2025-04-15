@@ -198,7 +198,18 @@
                 {
                     "name": "",
                     "id": "0effe160-88d6-4946-953f-4859ad9b2d3f",
-                    "path": "<Gamepad>/leftStickPress",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard;JoyConLeft",
+                    "action": "Block",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4bc8a50c-4b29-4228-96d6-f7ab057ec650",
+                    "path": "<Gamepad>/leftTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard;JoyConLeft",
@@ -231,7 +242,18 @@
                 {
                     "name": "",
                     "id": "590a99ab-a191-4d10-96b7-94b07e35b052",
-                    "path": "<Gamepad>/leftShoulder",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard;JoyConLeft",
+                    "action": "Throw",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2501796e-73eb-4513-a1db-d9b4e33bfa5e",
+                    "path": "<Gamepad>/rightTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard;JoyConLeft",
@@ -243,6 +265,17 @@
                     "name": "",
                     "id": "c959df26-0835-43bd-8cfe-e65ffe645f77",
                     "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard;JoyConLeft",
+                    "action": "Restart",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "af6336f6-a6c6-415f-b608-2f0634f1f0d4",
+                    "path": "<Keyboard>/enter",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard;JoyConLeft",
