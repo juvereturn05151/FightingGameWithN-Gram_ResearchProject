@@ -13,6 +13,11 @@ public class N_Gram : MonoBehaviour
         // Safety check: need at least 2 actions to make a prediction
         if (actionlog.Count < 2)
         {
+            //Assume chances of all outcomes are equal
+            chances.Attack++;
+            chances.Block++;
+            chances.Throw++;
+            chances.Normalize();
             return chances;
         }
 
