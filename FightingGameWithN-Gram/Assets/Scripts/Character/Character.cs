@@ -237,6 +237,13 @@ public class Character : MonoBehaviour
         // 1. Continue holding block if AI decided to sit and block earlier
         if (aiHoldingBlock)
         {
+            if (opponent.isAttacking) 
+            {
+                aiBlockDecision = true;
+                blockDuration = 0f;
+                return;
+            }
+
             aiBlockDecision = true;
             blockDuration += Time.deltaTime;
 
