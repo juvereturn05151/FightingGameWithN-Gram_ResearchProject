@@ -844,7 +844,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Block - Shift, X(Xbox)
+  m_text: Block - Shift, LB(Xbox)
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
   m_sharedMaterial: {fileID: 2140032, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
@@ -1534,6 +1534,7 @@ MonoBehaviour:
   previousButton: {fileID: 0}
   nextButton: {fileID: 1511120477}
   startButton: {fileID: 1583197912}
+  restartAction: {fileID: -5176672219437633204, guid: 6905212044b45e241980026cfca3626d, type: 3}
 --- !u!1 &631984544
 GameObject:
   m_ObjectHideFlags: 0
@@ -1727,7 +1728,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Throw - C, O(Xbox)
+  m_text: Throw - C, RB(Xbox)
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
   m_sharedMaterial: {fileID: 2140032, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}

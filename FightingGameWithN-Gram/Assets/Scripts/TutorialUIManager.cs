@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class TutorialUIManager : MonoBehaviour
@@ -17,6 +18,7 @@ public class TutorialUIManager : MonoBehaviour
     private GameObject startButton;
 
     private int currentPageIndex = 0;
+    [SerializeField] private InputActionReference restartAction;
 
     // Start is called before the first frame update
     void Start()
@@ -36,11 +38,20 @@ public class TutorialUIManager : MonoBehaviour
         //{
         //    ShowNextPage();
         //}
+        if (restartAction.action.WasPressedThisFrame())
+        {
+            ShowNextPage();
+        }
     }
 
     // Show the specified page and hide others
     void ShowPage(int pageIndex)
     {
+        if (pageIndex == tutorialPages.Length - 1 && startButton.activeSelf) 
+        {
+            Play();
+        }
+
         for (int i = 0; i < tutorialPages.Length; i++)
         {
             if (i == pageIndex)
