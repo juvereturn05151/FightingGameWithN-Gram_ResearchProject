@@ -892,7 +892,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2371029347350406274, guid: 2297467dc93fe8d43a62b77d7d3ebd0b, type: 3}
       propertyPath: aiDecisionInterval
-      value: 0.05
+      value: 0.075
       objectReference: {fileID: 0}
     - target: {fileID: 3565090984967372832, guid: 2297467dc93fe8d43a62b77d7d3ebd0b, type: 3}
       propertyPath: m_Name
@@ -1267,6 +1267,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 349894142895916241, guid: 3f0f28d356982b4439f164ce9a597d36, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 349894142895916241, guid: 3f0f28d356982b4439f164ce9a597d36, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -1284,6 +1288,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4038421631219265452, guid: 3f0f28d356982b4439f164ce9a597d36, type: 3}
       propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4038421631219265452, guid: 3f0f28d356982b4439f164ce9a597d36, type: 3}
+      propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4038421631219265452, guid: 3f0f28d356982b4439f164ce9a597d36, type: 3}
@@ -1327,6 +1335,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6344965359133369029, guid: 3f0f28d356982b4439f164ce9a597d36, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6344965359133369029, guid: 3f0f28d356982b4439f164ce9a597d36, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -1348,6 +1360,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7268125548966267320, guid: 3f0f28d356982b4439f164ce9a597d36, type: 3}
       propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7268125548966267320, guid: 3f0f28d356982b4439f164ce9a597d36, type: 3}
+      propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7268125548966267320, guid: 3f0f28d356982b4439f164ce9a597d36, type: 3}
