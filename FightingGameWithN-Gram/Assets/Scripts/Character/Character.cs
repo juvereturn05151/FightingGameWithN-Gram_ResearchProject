@@ -302,19 +302,12 @@ public class Character : MonoBehaviour
             else 
             {
                 // Dynamic movement patterns
-
                 float movementChoice = Random.value;
 
                 // 50% advance normally
                 if (movementChoice < 0.5f)
                 {
                     aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? 1 : -1, 0);
-
-                    // 20% chance to attack while advancing
-                    if (distanceFromOpponent < 2f && Random.value < 0.2f)
-                    {
-                        aiAttackDecision = true;
-                    }
                 }
                 // 20% quick backdash
                 else if (movementChoice < 0.7f)
@@ -324,16 +317,30 @@ public class Character : MonoBehaviour
                 // 15% defensive pause (block in place)
                 else if (movementChoice < 0.85f)
                 {
-                    aiBlockDecision = true;
                     aiMoveInput = Vector2.zero;
                 }
                 // 15% aggressive spam (rapid approach)
                 else
                 {
                     aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? 1.5f : -1.5f, 0);
-                    if (distanceFromOpponent < 2.2f)
+                }
+
+                if (distanceFromOpponent <= ATTACK_RANGE * 1.1f)
+                {
+                    if (predictedPlayerAction == Actiontype.Attacking)
                     {
-                        aiAttackDecision = true;
+                        aiBlockDecision = true;
+                    }
+                    else 
+                    {
+                        if (Random.value < 0.8f)
+                        {
+                            aiBlockDecision = true;
+                        }
+                        else 
+                        {
+                            aiAttackDecision = true;
+                        }
                     }
                 }
             }
