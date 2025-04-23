@@ -892,7 +892,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2371029347350406274, guid: 2297467dc93fe8d43a62b77d7d3ebd0b, type: 3}
       propertyPath: aiDecisionInterval
-      value: 0.075
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 3565090984967372832, guid: 2297467dc93fe8d43a62b77d7d3ebd0b, type: 3}
       propertyPath: m_Name
