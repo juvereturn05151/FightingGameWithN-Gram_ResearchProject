@@ -106,7 +106,14 @@ public class ActionChance
     public void Normalize()    //Assumes values not added
     {
         float total = Attack + Block + Throw;
-        if (total == 0) return;
+        if (total == 0)
+        {
+            Attack = 0.33f;
+            Block = 0.33f;
+            Throw = 0.33f;
+            total = 1;
+            return;
+        }
         Attack = Attack / total;
         Block = Block / total;
         Throw = Throw / total;

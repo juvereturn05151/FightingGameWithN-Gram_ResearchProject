@@ -158,7 +158,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      xbox_rb_0: 4249578791139060025
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
