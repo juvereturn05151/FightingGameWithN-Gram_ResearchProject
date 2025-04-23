@@ -221,20 +221,18 @@ public class Character : MonoBehaviour
 
         UIManager.Instance.PredictedActionText.text = "Predicted Action: " + predictedPlayerAction;
 
-        //Debug.Log("predictedPlayerAction: " + predictedPlayerAction);
-
         if (blockedSuccessfully)
         {
             if ( distanceFromOpponent <= ATTACK_RANGE * 1.5f) 
             {
                 aiAttackDecision = true;
                 aiBlockDecision = false;
-                blockedSuccessfully = false; // Clear after punishing
+                blockedSuccessfully = false; 
                 return;
             }
         }
 
-        // 1. Continue holding block if AI decided to sit and block earlier
+        // Continue holding block if AI decided to sit and block earlier
         if (aiHoldingBlock)
         {
             if (opponent.isAttacking) 
@@ -262,15 +260,7 @@ public class Character : MonoBehaviour
             // 30% chance to do something unexpected even when prediction says block
             if (predictedPlayerAction == Actiontype.Blocking)
             {
-                float closeRangeChoice = Random.value;
-                if (closeRangeChoice < 0.5f)
-                {
-                    aiThrowDecision = true;
-                }
-                else
-                {
-                    aiMoveInput = new Vector2(1, 0);
-                }
+                aiThrowDecision = true;
             }
             else if(predictedPlayerAction == Actiontype.Attacking)
             {
@@ -288,7 +278,18 @@ public class Character : MonoBehaviour
             {
                 if (predictedPlayerAction == Actiontype.Blocking)
                 {
-                    aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? 1 : -1, 0);
+                    float randomChoice = Random.value;
+                    if (randomChoice < 0.85f)
+                    {
+                        //Shimmy or move backward to bait opponent's attack
+                        aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? 1 : -1, 0);
+                    }
+                    else
+                    {
+                        //move toward to pressure the opponent
+                        aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? -1 : 1, 0);
+                    }
+
                 }
                 else if (predictedPlayerAction == Actiontype.Attacking)
                 {
@@ -309,7 +310,7 @@ public class Character : MonoBehaviour
                 {
                     aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? 1 : -1, 0);
                 }
-                // 20% quick backdash
+                // 20% moveback
                 else if (movementChoice < 0.7f)
                 {
                     aiMoveInput = new Vector2(opponent.transform.position.x > transform.position.x ? -1 : 1, 0);
@@ -344,9 +345,6 @@ public class Character : MonoBehaviour
                     }
                 }
             }
-
-
-
         }
     }
 

@@ -47,11 +47,6 @@ public class TutorialUIManager : MonoBehaviour
     // Show the specified page and hide others
     void ShowPage(int pageIndex)
     {
-        if (pageIndex == tutorialPages.Length - 1 && startButton.activeSelf) 
-        {
-            Play();
-        }
-
         for (int i = 0; i < tutorialPages.Length; i++)
         {
             if (i == pageIndex)
@@ -82,6 +77,11 @@ public class TutorialUIManager : MonoBehaviour
     // Show the next page
     public void ShowNextPage()
     {
+        if (currentPageIndex == tutorialPages.Length - 1 && startButton.activeSelf)
+        {
+            Play();
+        }
+
         if (currentPageIndex < tutorialPages.Length - 1)
         {
             currentPageIndex++;
